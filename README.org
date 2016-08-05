@@ -2,7 +2,7 @@
 
 This exporter is *early work in progress*, if you want to make a presentation
 that looks like the one that this exporter would create, you're currently better
-of editing the HTML file from the =prototype= directory.
+off editing the HTML file from the =prototype= directory.
 
 * What is this exporter supposed to do when it's finished?
 This exporter should create single file HTML presentations that should work in
@@ -21,7 +21,7 @@ finished*.)
     (not implemented yet)
   - There should be no paragraphs and other things outside of headlines
 - Links to pictures will be embedded into the presentation in base64, and their
-  text will be ~alt~ text for them, other links will be probably ommited
+  text will be ~alt~ text for them, other links will be probably omitted
 
 * Optional dependencies:
 Extensions listed here are optional, and they aren't required by this extension
