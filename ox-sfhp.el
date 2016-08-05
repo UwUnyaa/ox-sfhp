@@ -545,7 +545,11 @@ button {
   (concat "<!DOCTYPE html>\n"
           "<html>\n"                    ; lang should be here
           "<head>\n"
-          (format "<title>%s</title>\n" (org-export-data (plist-get info :title) info))
+          (format "<title>%s</title>\n"
+                  (let ((title (org-export-data (plist-get info :title) info)))
+                        (if (eq title "") ; title of a HTML document shouldn't be empty
+                            "Untitled presentation"
+                          title)))
           org-sfhp-meta
           org-sfhp-script
           org-sfhp-style-common
