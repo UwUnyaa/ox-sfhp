@@ -23,3 +23,7 @@ finished*.)
 - Links to pictures will be embedded into the presentation in base64, and their
   text will be ~alt~ text for them, other links will be probably ommited
 
+* Optional dependencies:
+Extensions listed here are optional, and they aren't required by this extension
+to work.
+- [[https://github.com/fxbois/web-mode][web-mode]] :: for better indentation of output files
