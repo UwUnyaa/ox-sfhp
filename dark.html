@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="en"> <!-- remove this later or something -->
+  <head>
+    <title>Single file HTML presentation</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style type="text/css">
+     /* common style, no colors should go in here */
+     body {
+       margin: 0;
+       font-family: sans, arial, helvetica;
+     }
+     #slides {
+       width: 100%;
+       height: 100%;
+       top: 0;
+     }
+     #slides div {
+       margin-top: 1em;
+       margin-bottom: 5em;
+       width: 100%;
+       text-align: center;
+       position: relative;
+     }
+     h1, h2, h3, h4, h5, h6 {
+       text-align: center;
+       margin-top: 0;
+     }
+     dl, p, blockquote {
+       text-align: left;
+       text-indent: 1em;
+       margin: 0.5em 2em;
+     }
+     blockquote:before {
+       content: "“";
+     }
+     blockquote:after {
+       content: "”";
+     }
+     pre, .monospace {
+       padding: 0.4em;
+       border-radius: 0.2em; /* CSS 3 */
+       text-align: left;
+     }
+     .monospace {
+       white-space: pre-line;
+       font-family: monospace;
+       line-height: 2;
+     }
+     hr {
+       width: 95%;
+       height: 2px;
+       border: 0;
+     }
+     pre {
+       margin: 0.5em 2em;
+       word-wrap: break-word; /* CSS 3 and IE 5.5+ */
+       white-space: pre-wrap;
+     }
+     dt {
+       font-weight: bold;
+     }
+     dt:after { /* CSS 2.1 syntax should be more compatible */
+       content: ":";
+     }
+     table {
+       margin: 1em auto;
+     }
+     td {
+       padding: 0.3em 1em;
+       border-width: 1px;
+       border-style: solid;
+       text-align: center;
+     }
+     tr:first-of-type td { /* CSS 3 */
+       border-bottom-width: 3px;
+       border-style: double;
+     }
+     ol, ul {
+       text-align: left;
+       margin: 0.5em 2em;
+       padding-left: 2.5em;
+     }
+     ol *, ul * {
+       margin: 0;
+     }
+     ol ol, ol ul, ul ol, ul ul {
+       padding-left: 1.5em;
+     }
+     #buttons {
+       position: fixed;
+       height: 4em;
+       width: 100%;
+       bottom: 0;
+       opacity: 0.5; /* CSS 3 */
+       filter: alpha(opacity=50); /* old versions of IE */
+       text-align: center;
+     }
+     #counter {
+       position: absolute;
+       margin-top: 0.25em;
+       width: 30%;
+       left: 35%;
+       font-size: x-large;
+     }
+     button {
+       outline: none; /* don't show that buttons are focused */
+       height: 100%;
+       width: 3em;
+       margin: 0;
+       border: none;
+       font-size: xx-large;
+     }
+     #left {
+       float: left;
+     }
+     #right{
+       float: right;
+     }
+     img {
+       max-width: 90%;
+       margin: 1em;
+     }
+    </style>
+    <!-- <style type="text/css">
+         /* polish quotes */
+         blockquote:before {
+         content: "„" !important;
+         }
+         blockquote:after {
+         content: "”" !important;
+         }
+         </style> -->
+    <!--[if lt IE 7]>
+      <style type="text/css">
+      #buttons {
+      position: absolute !important;
+      }
+      div {
+      posititon: absolute;
+      }
+      </style>
+    <![endif]-->
+    <!-- <style type="text/css">
+         /* light style */
+         body {
+         background-color: #EEE;
+         color: #111;
+         }
+         pre, .monospace {
+         color: #000;
+         background-color: #FFF;
+         }
+         hr {
+         background-color: #111;
+         }
+         td {
+         border-color: #000;
+         }
+         #counter {
+         color: #000;
+         }
+         button {
+         background-color: #AAA;
+         color: #000;
+         }
+         .disabled {
+         background-color: #333;
+         }
+         #buttons {
+         background-color: #BBB;
+         }
+         </style> -->
+    <style type="text/css">
+     /* dark style */
+     body {
+       background-color: #222;
+       color: #AAA;
+     }
+     pre, .monospace {
+       background-color: #333;
+       color: #BBB;
+     }
+     hr {
+       background-color: #AAA;
+     }
+     td {
+       border-color: #AAA;
+     }
+     button {
+       background-color: #444;
+       color: #AAA;
+     }
+     .disabled {
+       background-color: #111;
+     }
+     #buttons {
+       background-color: #333;
+     }
+    </style>
+    <script type="text/javascript">
+     /* @licstart The following is the entire license notice for the JavaScript
+        code in this page.
+
+        Copyright (C) 2016
+
+        The JavaScript code in this page is free software: you can redistribute
+        it and/or modify it under the terms of the GNU General Public License
+        (GNU GPL) as published by the Free Software Foundation, either version 3
+        of the License, or (at your option) any later version. The code is
+        distributed WITHOUT ANY WARRANTY; without even the implied warranty of
+        MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU GPL for
+        more details.
+
+        As additional permission under GNU GPL version 3 section 7, you may
+        distribute non-source (e.g., minimized or compacted) forms of that code
+        without the copy of the GNU GPL normally required by section 4, provided
+        you include this license notice and a URL through which recipients can
+        access the Corresponding Source.
+
+        @licend The above is the entire license notice for the JavaScript code
+        in this page. */
+     var currentSlide = 1, totalSlides, left, right, counter;
+     /* change value of currentSlide to open up the presentation on that slide */
+     function init () { /* init function to be run onload */
+       totalSlides = document.getElementById("slides").children.length;
+       for (i = 1; i <= totalSlides; i++) /* hide all slides */
+         hideSlide(i);
+       showSlide(currentSlide);
+       /* add buttons (they won't work without JavaScript anyway) */
+       document.body.innerHTML += '<div id="buttons"><div id="counter"></div><button id="left" title="previous slide" onclick="previousSlide();">&lt;</button><button id="right" title="next slide" autofocus="autofocus" onclick="nextSlide();">&gt;</button></div>';
+       left = document.getElementById("left");
+       right = document.getElementById("right");
+       counter = document.getElementById("counter");
+       update();
+     }
+     function getSlide (n) {
+       return document.getElementById("slide" + n);
+     }
+     function showSlide (n) {
+       getSlide(n).style.display = "block";
+     }
+     function hideSlide (n) {
+       getSlide(n).style.display = "none";
+     }
+     function previousSlide () {
+       if (currentSlide > 1) {
+         hideSlide(currentSlide);
+         showSlide(--currentSlide);
+         update();
+       }
+     }
+     function nextSlide () {
+       if (currentSlide < totalSlides) {
+         hideSlide(currentSlide);
+         showSlide(++currentSlide);
+         update();
+       }
+     }
+     function update () { /* update the counter and "disable" buttons */
+       if (currentSlide <= 1)
+         left.className = "disabled"; /* classList doesn't work in IE 5 */
+       else
+         left.className = "";
+       if (currentSlide >= totalSlides)
+         right.className = "disabled";
+       else
+         right.className = "";
+       counter.innerHTML = currentSlide + "/" + totalSlides;
+     }
+     function getKey(event) { /* bind keys to changing slides */
+       switch(event.which){
+         case 80: /* p */
+         case 66: /* b */
+         case 72: /* h */
+         case 75: /* k */
+         case 37: /* left arrow */
+           previousSlide();
+           break;
+         case 70: /* f */
+         case 78: /* n */
+         case 74: /* j */
+         case 76: /* l */
+         case 39: /* right arrow */
+           nextSlide();
+           break;
+       }
+     }
+     document.onkeydown = getKey;
+    </script>
+  </head>
+  <body onload="init();">
+    <div id="slides">
+      <div id="slide1">
+        <h1>Simple HTML presentation</h1>
+        <p>This is a sample presentation. It is supposed to come in a single
+          file and work in any web browser (it's even usable on Internet
+          Explorer 5, and should even work in browsers that don't support
+          JavaScript.) </p>
+        <p>This presentation will degrade depending on what the browser that
+          it's being displayed in supports, and it should stay usable even in a
+          web browser that doesn't support CSS and JavaScript. </p>
+        <p>This presentation should also work well on mobile devices and other
+          devices like smart TVs. </p>
+      </div>
+      <div id="slide2">
+        <h1>Table example</h1>
+        <p>This is an example of a table.</p>
+        <table><tbody>
+          <tr>
+            <td>number</td>
+            <td>text</td>
+          </tr>
+          <tr>
+            <td>1</td>
+            <td>first</td>
+          </tr>
+          <tr>
+            <td>2</td>
+            <td>second</td>
+          </tr>
+          <tr>
+            <td>3</td>
+            <td>third</td>
+          </tr>
+        </tbody></table>
+        <p> This table uses some CSS 3 selectors to get some styling, but it's
+          still readable in older browsers. </p>
+        <hr/>
+        <table><tbody>
+          <tr>
+            <td>number</td>
+            <td>text</td>
+          </tr>
+          <tr>
+            <td>1</td>
+            <td>first</td>
+          </tr>
+          <tr>
+            <td>2</td>
+            <td>second</td>
+          </tr>
+          <tr>
+            <td>3</td>
+            <td>third</td>
+          </tr>
+        </tbody></table>
+        <p> Multiple tables are displayed correctly. </p>
+      </div>
+      <div id="slide3">
+        <h1>Long paragraph example</h1>
+        <p> This is an example of a long paragraph. </p>
+        <p> Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis
+          lacinia, leo at viverra mattis, purus augue cursus purus, ac porttitor
+          tellus nibh et ligula. Cras molestie tincidunt lacus. Donec dapibus
+          vestibulum ligula, vel rutrum justo euismod nec. Vestibulum finibus
+          pretium sem tincidunt sollicitudin. Phasellus feugiat nibh id enim
+          efficitur scelerisque. Suspendisse nec libero eget lorem cursus
+          suscipit ut nec ligula. Morbi vulputate enim magna, et pulvinar lectus
+          lacinia non. Fusce quis egestas mi. Sed tempor malesuada diam, id
+          vulputate ligula facilisis et. Morbi quam tortor, iaculis eget euismod
+          ac, euismod ut dolor. Sed tincidunt tempus fermentum. In tempus
+          vehicula mauris, at fringilla orci congue vel. Aenean quis dolor eu
+          purus luctus ultrices in vel magna. Cras posuere interdum gravida. Sed
+          quis efficitur nisi. </p>
+      </div>
+      <div id="slide4">
+        <h1>base64 picture example</h1>
+        <p> This is an example of a picture. It is embedded into the
+          HTML file in base64. These won't work in old versions of IE. </p>
+        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAZAAAAGQCAYAAACAvzbMAAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH4AYRETIATeHpTgAAAB1pVFh0Q29tbWVudAAAAAAAQ3JlYXRlZCB3aXRoIEdJTVBkLmUHAAAa60lEQVR42u3df5DU9X3H8efiYVAOfwBaQdMDq4Wk2JrMEA3xRwC5ajNpwMRYMU2VJB2spk1i2kmnYyySpukkplpNYzINmh9CjBOwNZNRQIyo+GuS2sFMsNDAJQascqByCOWO+/SPz/d0Pe/H7t7u3vfH88HseOd9b2/3/fnsvvbz/Xy/n2+JEAKSJFVpjCWQJBkgkiQDRJJkgEiSDBBJkgwQSZIBIkkyQCRJBogkyQCRJMkAkSQZIJIkA0SSZIBIkgwQSZIMEEmSASJJMkAkSQaIJMkAkSTJAJEkGSCSJANEkmSASJIMEEmSDBBJkgEiSTJAJEkGiCTJAJEkyQCRJBkgkiQDRJJkgEiSDBBJkgwQSZIBIkkyQCRJBogkSQaIJMkAkSQZIJIkA0SSZIBIkvSaFksgZUQvsB/YAzwP7ASeK7vtAl4EOoF9wMHkd8YA44AJwCTgBGAKcErZbSpwEjARGO9HS1WmRAjBMkgpEoCXgB3A08AjwANARxMfQxswHzgHOBOYBhwHlGweGSBSenQn4bAJWAPck+LHuhBYBMxJQmaszWeASGquncBDwB3A2gw/j3bgCuB84m4wGSCS6qwX2ArcDSwDenL4HFuA64FLgNNxHsUAkTQi24E7gesK+NyXA5cD0+0GBoikynQB9wLXEo+MKropwI3A+4FWy2GASHqzbckb5W2WYlBLk2A9zVIYIFLRBeAx4FPAU5ajYrOBm4B346HBBohUML3AeuI+/t2Wo2aTiXNEF+CkuwEiFWDEsR64mDjXofpoBVYnQeKIJDPMfKlSTxCPKGo3POquK6nr9KTOMkCkXOgALgLOprnLiRS11mcn9bbWBoiUWQeAG4jrQN1nOZrqvqTuNyTtoFRyDkQayIPAPMuQGhuAuZbBEYiUZnuJR1YZHukyL2mXvZbCEYiURuuIE7lKt7XAAsvgCERKgwPAVYZHZrQn7eXciCMQaVRtAc4gn6vj5l0LsBmYaSkcgUjNtgp4m+GRWT1J+62yFAaI1CzdwDXAYkuRC4uT9uy2FM3mLiwVSyfwXuAZS5E7s4CfAJMshQEi1duzuL+8CLYAMyxDM7gLS8XwsOFRGDOT9pYBIo3YGuA8y1Ao5yXtLgNEqtntxKXXVTwXJ+0vA0Sq2q3AEstQaEuSfiADRKrYzcAnLYOSfnCzZWgEj8JSPkcehof6u4V4vogMEGlAt+NuKw1uBXClZTBApP7W4IS5hrcaWGQZDBCpz8N4qK4qtxE41zIYIJJnmKsWnrFugKjgOoHJlkE12o1rZ42Ah/Equ7qJCyNKtXovruJrgKiQPo2r6mpknkn6kWriLixl0yq8nofqZyVwmWUwQJR/W4hXopPq6Rd4MIYBolw7AByDl6FV/bUArwBHWYpKOQeibPmM4aEG6Un6lxyBKIfWAe2WQQ22FlhgGQwQ5cdeYKJlUJPsAY63DMNxF5aywVVUZX9zBCJV7UFgnmVQk20A5loGA0TZdQA42jJolLyKR2UNwV1YSrcvWwLZ/xyBSNXqAKZZBo2yHUCbZXAEomxZaglkP3QEIlXrCeBsy6CUeBw4yzIYIEq/AEwn7sKS0qAN2A6ULEU5d2EpfdYbHkqZjqRfyhGIUqwXOBboshRKmVbgZT92OwJRukcfhofSqMtRiCMQpVcATiRep1pKo8nACzgX4ghEqfOY4aGU2530UzkCUcq8C3jKMijlZgNPWgYDROmxDTjdMigjtgKnWQZ3YSkdbrQEsr86ApGq1QVMsAzKmH3EQ3sdgUij6F5LIPutIxCpFlOBXZZBGTMF2OkIRBo92w0PZdSupP8aINIoudMSyP6bVe7C0ujpBY6wDMq4w8X9KO4IRKNnqyWQ/dgAkWpxtyWQ/TjL3IWl0TMW6LEMyrgWoNsRiNQ8Ow0P5UQPhT2c1wDR6HjIEsj+bIBItbjDEsj+nHXOgaj5uoEjLYNy5hBxXs8RiNRAHZZA9msDRKrFJksg+7UBItVijSWQ/ToPnANRcwU/tijHeoGSIxCpMV6yBLJ/GyBSLXZYAtm/DRCpFk9bAtm/DRCpFo9YAtm/88JJdDXXNDwPRPnVRqF2Yxkgah4vIKUiKNAFptyFpebZbwlkPzdApFrssQSynxsgUi2etwSynxsgUi12WgLZzw0QqRbPWQLZzw0QyReWZIDY2vKFJdnPDRCl2y5LIPu5ASLV4kVLIPu5ASLVotMSyH5ugEi12GcJZD83QKRaHLQEsp8bIFItei2B7Od50mJr57H37icuyPM88bTY58puu4izfJ3JWPtg8jtjgHHABGAScAIwBTil7DYVOAmYCIyv/vPHGENEfizPE5dzz6xAvADzDuJl0B4BHqC5F9toA+YD5wBnEi/2cRxQGnjzCUCXLaeca6Uw8yAGSGZ0J+GwCVgD3JPix7oQWATMSUJmbPzfU/FcEOXfFAqzHpYBkmo7gYeAO4C1GX4e7cAVwPlQmmqzKt9mAZsNEDVdL7AVuBtYBvTk8Dm2ANcDl0Bphk2u/JkLbDBA1DTbgTuB6wr43JcDl0Nput1A+bA4eTkXgIfxjpouYBVxYuDUgoYHyfM+FcJUCKvsFsq+U4rzVA2QptsGXEU8JGkxzir32RXrEUoQroKwzZLIADFAFA+53QS8CzgduM2SDOm2WKfwLgibLIcMEAOkiHqJR0+dCLwHeMqSVOWpWLdwAoS1lkPZUKADDQ2Qho041gHHAn8I7LYkI7I71jFMgLDOcijdTjJAVLMngOnEcx887bq+umJdwzQIT1gOpdNEA0RV6wAuAs6mucuJFLXWZ0O4CIK1VsqMN0BUsQPADcR1oO6zHE11X6x7uMFSKB3acDFFVepBYJ5lSI0NUJprGTR6lgDfcgSiIe0FLjc8UmcehMth/iFLodFxTrGeriOQqq0jTpAr3dZCaYFlUHP9DHiHIxC9yQHiGeSGRza0xzPapWaa5ghEb7IFOIN8ro6bdy3AZijNtBRqvF4GvZ6aI5BCWgW8zfDIrJ7Yfi7UqEZbWKzwMECG1A1cQ1zwUNm3GMI1lkGNs6h4T9kAGVAn8E7ga5YiV74G4Qz4x/2WQvU3p3hP2TmQN3kWcH95/m3xioiqr0PAWEcgBfaw4VEYMyE8bBlUH+3FCw8D5A3WAOdZhkI5D8Iay6CRu6KYT9sAAeB24GLLUEgXQ7jdMmhkzjdACupW4gI2Kq4lEG61DKpNC4W6iJQB8pqbgU/6AlDsB+Fmy6DqXV/cp17go7BuNTw0gFug5PkiqsIWoKAH9BU0QG7H3VYa3AooXWkZVJnDFHZfTgGf9hrDQ8NY4tFZqsxyCj0RULARyMN4qK4qtxFK51oGDe6XwHQDpAA8w1y18Ix1DWIKsLPYJSjI4KvT8FCNZrp2lgZ2oyUowAikm7gw4jO2tmo0C0qbLYPeaB/Q6ggk5z5teGiEnnEpeL3RUsOjACOQVXg9D9XPSihdZhkEW4HTLEOOA2QL8UqCUj39wsvjFt1s4EnLkOMAOQAcg5ehVf21QKnbMhTZoxTy4lEDyekcyGcMDzVID4SrLENRTQbebRlyPAJZR7y6i9RIa6G0wDIUzf2+veQ4QPYCE21VNccF/wcPHGkdiqIVeBkvglEmZ6XwUEs10XoXXCyU1YZHjkcgDwLzbFE12QYozbUMedcGbAdKliKHAXIAONrW1Ci9ioI1yLvHgbMsQ385GZB92ZbU6Ak3WIM8u9DwyPEIpAOYZktqlO2AUptlyGnTYtPmdQSy1FaU/VCNsczwyPEI5AngbFtRKfE4lM4a9Zf065ybGbFXgaMsQw5HIAG41BZs5PtQrbfCsj/mygbDI8cBsp44/yGlRQeEdZYhDxYDHp1dwefMTO7C6gWOBbpswUaOQEYyOCysVijtS0nDuQurZnuA4y1DTkcg6w2PZgpV3gqtC8Ja+0yWrTU8cjwCCcCJwG5bzw+yKTUZSi/acFm0FPi6ZcjxCOQxwyNrPsLrE+zHMfTUVUeyTd/2fzrANr8Evgl8jHiC10nAOOAtwBTivusvAJW+hw90AMDdwEXAycSJ1N8FrgJ+NcDnmTXAHwG/nTyGt+6GK99HPIGglj/+Y+BDxPObxgEnAO8FvkH9L1OwFfhb4lWSTgSOBH4r+XtfKdZIvwX4qi/XKj/Qh5Ct2+yA/xr/r3yn1Ej/vULg1LL7m0OgZ4Dtegi8p2y76QReHuaxDXU7msB3q3yuBwl8cIj7PJ7AT5Pf209g0VCPYUKAxwOEIW7l2x8McNkwz+sPAvyqwvsb6u/2BLg2QMswf+/EAA8Nc185uf0ia++FKbhl6wFv9Y09iwESCDxOoKXsPj8/wDZ/X/bzFgKPVfDYKrl9v4rn+vEK7u+tSdAsquTvTwvwaoVv+B+v8DmdGqBzBAFyOMAHqqjhkQEey3d4rDQMChAgS31jz2qABAL/UHafRxDYWPazR5P/1/fz5UPczwwCnyXwQwLPEHgpGb28SuBZAl8n8Dtl93UcgX0VPte+7b9KoIPAoeS/n+u3zbx+2+4YYlu+VWGA9N0uD7ApQFeAfcnXi/tt85ERBMgXyrYZkwTXxgB7A3QHeC7AigBtZdtND3Aon+FxtUFQgADZ55v6aAVINbeh/h0mMLffJ/k9SQBMK/v/5yXbjuTfPgJnl93nv1b4XFsJbB5ku0/Uuu0HqgiQLw+x7RfLtisF2FpDgHQGODr5+dgA9w/x93YHmFF2f9/JX3jMCoFDBkGttwxNot/rfFUeDtn4Lq9fNPLXwCeSyem++ebjge/V4fCOVuCfy75fX+Hv/TUwa5Cffazf938zxLZLyr/5rwr/+LnAZ4f4+eeAOWWz99+uoTB3ENfnAPgrhr4+6yTgn/L9GvwJMNaXZgGOwrrW1sqDk4FvlX3/Q2BV2fffBN5ap7/1zrKvn67wdz40xM/e3u/7D1a6baWHgw23IGMJ+Iuy7x+toSgbyr6+rILty0/HfipffXFLkpGqWUbOA9kOnGprNbdnlB2p14D7vwq4bYBP+P9W4e8fBn4E/HsSDh3EI04PDbL9McTrWQ/3XA8Qj5wd8IjFfh+5DhIP261k20GLWOrXz6dV8VqYCvymyob77WToB3DEINuGQX5/PLk5rHdjMuBTEQLkC8B1tlaeAqSLeM5G3/vRKcknwvEV/O7PiesW/rzK59Nbh+da67YVBchQiVS+Td8Kf+OSxKvmAY7n9V1YtcjByYmrgUW+xOshA7uweg2PPPpSvw+zu4BnKvi9XcD5VYZHTt73hkmoCvUUu9+tMDwKFiBbbaW8uQ/4Yr//dxj4swE+UA80GO1Mvj4K+BRwP3HPzj6gm9ePQzqcouccnq0wHavZppYFm8p3+ndSqIXObgGu9OVXsAC521bKk18Rlzbpey86lzg/AfAs8UCjofy47OtVxCOt2olTB63E5Sj6/Dpr/XhTldvMqOFxlP/O48XpdzcB1/jyK2CALLOV8qIb+HDZCOJk4lFYN/X7lPjgEPexs+zrBcP8ve9nrR9/o4Jtylf6e08Nj2N+2df/Uox+dwvxiGUVLUB2Uvh9tnnyWeJViElGCj8grhN4JfD+5P+H5PvBLqlRPsm+YYi/9SiwPE1PvgfCzmG22UhcwHAwX+L1Q3dLwEdreBxLeH2i/n7g8wy/a2pbWQNlzApHHo2V6jMdV3pGeF6WMvlBv/u8sd/PnycwqeznHxvkft5Xts0xBL5C4H+Stan2JWtu/SWBsVWcJV/Ncx3RtiurWMrksWQpk67k6/5LmSwewVIm1/Xbbk6A7wXYnizouD/AtuTM8z9Oljshe2eZr/ZM8YIvZdLuG3nWljIZ6I31vwlMKPv5ogpD5kcDbPMggVKFj+PqtAVIe50WU5yWLDMyksUUF9bQthkKj42+uRc8QA75Jp6HAHmVwO+X/ezUZO2rwf5dVrbtFAKdA2xzc7+FFwe6/TmB7rQFCBUs537pMPU9I8COOiznfjjA3yUr7Q7Xpm8P8OPshMcW39ibdUvxiYTbgNPdxTha6nVN9CXA7cnXbyFeD+wdQ/zuXuL6Un3TBZcOMhn+n8kc8EPJtkcST0w8l3g48LkDPI9KzuVr1ImEr227FUqnDbPRfxDXrPop8L/Ew8t+D/gT4OMMvXhTtWeAPpdMFKyPj409SUO9lbju1oeBC0bYIZpkFnFtK5cnaeLbRGoD5DvJO4GUJ9+G0kdH8IavAV1NPKTbhRGbKsVHYa2xdZRD9uu6Wwncang4AnnDJ7Exto5y+qoLjkDqoQXYDMy0FI5A3uAlW0b5Nf+QNRippcArhocBMqAdtozya/3PrcFIrCWekH+UpTBABvS0LaMcs3/XZDHxILEFlsIAGdIjtoxyzP5dtQ3AndS2ALGKFiAP2DLKsfL+nZOl0htlGfH6V3MtRRql8CisXt54qU0pj688A2NIFxIvedxmKdKsJX0Pab+tIhVVG3AXcJalyIIU7sLaY6so/0KHNSjXSjy6arvhYYCMyPO2igrAfg7AZOJlSV4mHl1VsiQGyIjstFVUAAXv57OJ18Z6gXhJYheeMEDq4zlbRQVQ0H6+lLjo75PExX4dcWRaiy8syX7eUFOAG4lXxW215Q0QX1iS/Xw4y4HLgem2tgHSNLtsFRVADvt5C3A9cAnxWnDOaxggzfeiraICeDFex+IO4uGrWdUOXAGcD0y1VYsmhWeiT3UUogKYwmtHYnUDHcAm4vWm7knxw14ILCJOgLfhRZwMkLQFyASgy5ZRzrUC+wb+USBeEmcHceHeR4jLZzXz3MM2YD5wDnAmMA04Do+aUtoDZCzQY8so51qSoUcVeokr/ewhnoe4kzgX33fbRdwD3Jlk08Hkd8YA45LPZpOAE5IB0Cllt6nAScBEYDzOXyirAXJE0uulPBsDHLYMynwv9iFJ9nMpD714nK2iArCfywBpgAm2igrAfi4DpAEm2SoqAPu5DJAGOMFWUQHYz2WANMAUW0UFYD+XAdIAp9gqKgD7uQwQX1iS/VwGiC8syX4uZTpAXNJTRWA/lwHSACfZKioA+7kMkAaYaKuoAOznyr4ULqbYS1xQUcqzw7gelhyBNOQhtdkyyrE2w0MGSOPMt2WUY/ZvGSANdI4toxyzf8sAaaAzbRnlmP1bBkgDTbNllGP2b+VDCo/CAgg4yaj86gVKlkGOQBqVa7DQ1lEOLTQ8ZIA03iJbRzlkv5YB0gRzbB3lkP1a+ZHSORCAbuBIW0g5cwgYaxnkCKSxxgLttpBypN3wkAHSPFfYQsoR+7PyJcW7sAB2AifbSsqJ3+B1QGSANNVYoMeWUsa1EOf1pPzIwNl619tKygH7sRyBjIJngZm2lDJuCzDDMsgAaS4vMKU88AJSyp8x2XiIy20pZdhyw0OOQEbPduBUW0sZ9UtgumWQATJ6pgK7bDFlzBTi4ehS/mRoXH2jraUMst/KEUgKdAETbDFlzD6g1TLIEcjoagWW2mLKkKWGhxyBpMc24HRbTRmxFTjNMsgRSDqcBsy21ZQBsw0PGSDpc5OtJvuplAIZ24UFEIATgd22nlJqMvACXvtcjkBSmHlwpy2nFLvT8JAjkPTqBY4lHtorpUkr8DIuXSJHIKl+2KttPaXQasNDjkDSLxDXF+qwFZUSbcR129x9JUcgqc8+uMsWVIrcZXjIAMmOs4ALbUWlwIVJf5SKI8O7sPp0ANNsSY2yHcRdWJIjkAxpA5bZkhpFywwPOQLJrgPA0bamRsmrwFGWQY5AsukoYIOtqVGwwfCQAZJ9c4HFtqiaaHHS76RiyskurD57gYm2qppkD3C8ZZAjkHw4Hlhrq6oJ1hoeMkDy95QW4JUL1VhLk34mFVvOdmH1OQAcA/TYwqqzFuAVnDiXcrvq21HAZltXDbDZ8JDyHSAAM4GVtrDqaGXSryTlPEAALgOutpVVB1cn/UlSn5zOgZTrBt4JPGNrq0azgJ8BYy2FVKwAAegkXqdaqsVuYJJlkPopyKXTJgFbbG3VYIvhIRU7QABmABttcVVhY9JvJBU8QADOxWupqzKrk/4iyQB5zSJghS2vIaxI+okkA+RNrgRusfU1gFuS/iHJABnUNcBN9gCVuSnpF5IqUZDDeIdyK/BJe4IjD8NDMkBqcTuwxDIU1grcbSUZICOwBrjYMhTOapwwlwyQOngYOM8yFMZGPFRXMkDq6FlccbUItuBJgtLIjLEE/c0grn00y1Lk0qykfQ0PyQBpiEnE1VddCj5frk7a1bWtpHpwF9awVgGLLUPmrcTreUgGyCjYApyB11jPohbiZWid15LqzV1YFZkJvAIstRSZsjRpN8NDcgSSCuuAdsuQemuBBZZBcgSSJguAPTgvklaLk/YxPCRHIKn2IDDPMqTGBmCuZZAcgWTBXOBVYJmlGFXLknYwPCRHIJnUQZy0vc9SNM2FwG1Am6WQDJA8eAK4NAkUNUYbcBdwlqWQDJC8CcB64uq+XZajblqJq+deAJQshzTKnANpUC7Ho4BeBu4HJluSEZmc1PHlpK6Gh2SAFKK87cALwKPAbEtSldlJ3V5I6mh3lQyQQo5I5gBPAlvxjPbhLE3q9GRSN0ccUjrf2ZwDGSVdwL3AtcAuy8EU4Ebg/cS5DkkGiCqwHbgTuK6Az305cDkw3W4gGSCqXS9x183dxJPj8rj6bwtwPXAJcDruRZUMEDXETuAh4A7i4oBZ1Q5cAZwPTLVZJQNEzdVNPDlxE7AGuCfFj3UhsIg4Ad4GjLX5JANE6RGAl4AdwNPAI8ADNPcM+DZgPnAOcCYwDTgOj5qSDBBlUi+wn7ik+fPE3WDPld12AS8CncA+4GDyO2OAccAE4jXDTyAeGXVK2W0qcBIwERiP8xeSAWKASJKq5kdISZIBIkkyQCRJBogkyQCRJMkAkSQZIJIkA0SSZIBIkgwQSZIMEEmSASJJMkAkSQaIJMkAkSTJAJEkGSCSJANEkmSASJIMEEmSDBBJkgEiSTJAJEkGiCTJAJEkyQCRJBkgkiQDRJJkgEiSDBBJkgwQSZIBIkkyQCRJBogkyQCRJMkAkSQZIJIkA0SSZIBIkmSASJIMEEmSASJJMkAkSQaIJEkGiCTJAJEkGSCSJANEkmSASJJkgEiSDBBJkgEiSTJAJEkGiCRJBogkyQCRJBkgkiQDRJJkgEiSZIBIkgwQSZIBIkkyQCRJBogkSQaIJMkAkSQZIJIkA0SSZIBIkmSASJIMEEmSASJJMkAkSYX3//GBs/TG7m0wAAAAAElFTkSuQmCC" alt="example image" />
+      </div>
+      <div id="slide5">
+        <h1>Detailed list example</h1>
+        <dl>
+          <dt>Term</dt>
+          <dd>A definition of a term. </dd>
+          <dt>Another term</dt>
+          <dd>Definiton of another term, this one is a bit longer. </dd>
+          <dt>A term with a very long definiton</dt>
+          <dd>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla
+            sapien urna, vestibulum in urna sed, consequat scelerisque dui.
+            Phasellus rutrum pretium risus, ac molestie ipsum finibus sed. Fusce
+            lacinia elit arcu, in malesuada magna venenatis a. Donec blandit
+            ante nibh, non aliquam metus fringilla nec. Suspendisse potenti.
+            Phasellus porttitor turpis id dictum sodales. Fusce mattis odio sed
+            sapien aliquam consectetur. Duis semper cursus nunc. Fusce at mattis
+            arcu, non condimentum nisl. Integer tellus lacus, dignissim
+            venenatis est at, condimentum blandit erat. Nulla euismod sapien
+            cursus felis dignissim consectetur. Duis feugiat in dolor sit amet
+            accumsan. Phasellus auctor egestas dui viverra vestibulum. </dd>
+        </dl>
+        <p>These lists won't have colons at the end of <span class="monospace">&lt;dt&gt;</span> tags in browsers that don't support CSS 2.1, but they are still readable.</p>
+      </div>
+      <div id="slide6">
+        <h1>List example</h1>
+        <p>A simple example of lists.</p>
+        <ol>
+          <li>Numbered lists</li>
+          <li>
+            <ul>
+              <li>And unordered lists</li>
+              <li>That can be nested</li>
+            </ul>
+          </li>
+        </ol>
+        <p>This list can look a bit wrong in some browsers, because they either
+          don't support CSS at all, or have bugs in their implementations. </p>
+      </div>
+      <div id="slide7">
+        <h1>Examples of org-mode emphasis (and monospace)</h1>
+        <p> Text can be made <b>bold</b>, <i>italic</i>, <u>underlined</u>,
+          <s>strike-through</s>, and <span class="monospace">monospace</span>.
+        </p>
+        <p>
+          <sup>Superscript</sup> and <sub>subscript.</sub>
+        </p>
+        <p>The previous paragraph would be written in org-mode as: </p>
+        <pre>Text can be made *bold*, /italic/, _underlined_, +strike-through+, and
+~monospace~.</pre>
+        <p> <span class="monospace">&lt;pre&gt;</span> tags have word
+          wrapping in browsers that support CSS 3. Lines should be kept short to
+          avoid problems on displays that aren't wide enough, or can't display
+          long lines of text for any other reason. </p>
+        <p> <span class="monospace">&lt;s&gt;</span> tags can be problematic
+          in some browsers, because they can reffer to text that should be
+          deleted, not to text that is specifically strike-through. Also, some
+          text terminals might not support strike-through text at all. </p>
+        <p> Code blocks and monospace text use <span class="monospace">border-radius</span> to
+          look better, and that requires a browser that supports CSS 3 to work. </p>
+      </div>
+      <div id="slide8">
+        <h1>Example of a code block</h1>
+        <p> This is an example of a block of code written in C. </p>
+        <pre>#include &lt;stdio.h&gt;
+
+int main(){
+  printf("Hello world!\n");
+}</pre>
+        <p> This block of code would be written in org-mode as:</p>
+        <pre>#+BEGIN_SRC C
+#include &lt;stdio.h&gt;
+
+int main(){
+  printf("Hello world!\n");
+}
+#+END_SRC</pre>
+      </div>
+      <div id="slide9">
+        <h1>Quote example</h1>
+        <blockquote>Lorem ipsum dolor sit amet, consectetur adipiscing
+          elit. </blockquote>
+        <p> This quote would be written in org-mode as: </p>
+        <pre>#+BEGIN_QUOTE
+Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+#+END_QUOTE</pre>
+      </div>
+      <div id="slide10">
+        <h1>Multiple heading levels</h1>
+        <h2>h2 - level 2</h2>
+        <h3>h3 - level 3</h3>
+        <h4>h4 - level 4</h4>
+        <h5>h5 - level 5</h5>
+        <h6>h6 - level 6</h6>
+      </div>
+    </div>
+  </body>
+</html>
