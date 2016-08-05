@@ -418,10 +418,6 @@ button {
   "Return content as bold text in HTML format."
   (format "<b>%s</b>" contents))
 
-(defun org-sfhp-underline (type contents info)
-  "Return content as underline text in HTML format."
-  (format "<u>%s</u>" contents))
-
 (defun org-sfhp-strike-through (type contents info)
   "Return content as strike-through text in HTML format."
   (format "<s>%s</s>" contents))
