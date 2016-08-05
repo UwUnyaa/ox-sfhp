@@ -19,6 +19,7 @@
 
 ;;; Dependencies:
 (require 'ox)
+;; this exporter can use web-mode if it's installed to indent documents
 
 ;;; Variables and constants:
 
@@ -334,6 +335,10 @@ button {
 (defvar org-sfhp-color-theme "dark"     ;change this value later or something
   "Color theme for ox-sfhp export. Can be light or dark.") ;maybe an option to
                                                            ;add custom one
+
+(defvar org-sfhp-indent-output t        ;for testing
+  "When non-nil, ox-sfhp's output is indented.")
+
 ;; backend
 (org-export-define-backend 'sfhp
   '((bold . org-sfhp-bold)
@@ -532,8 +537,10 @@ button {
 
 (defun org-sfhp-final-filter (contents backend info)
   "A final filter for ox-sfhp."
-  ;; add an option to indent the output
-  (org-sfhp-wrap-filter contents backend info))
+  (let ((wrapped-output (org-sfhp-wrap-filter contents backend info)))
+    (when org-sfhp-indent-output
+      (setq wrapped-output (org-sfhp-indent-filter wrapped-output backend info)))
+    wrapped-output))
 
 (defun org-sfhp-wrap-filter (contents backend info)
   "Filter that wraps output in HTML tags and inludes scripts."
@@ -556,3 +563,13 @@ button {
           contents
           "</div>\n</body>\n</html>"))  ; slides div is closed here, and then
                                         ; everything else
+
+(defun org-sfhp-indent-filter (contents backend info)
+  "Intent filter for ox-sfhp."
+  (with-temp-buffer
+    (insert contents)
+    (if (fboundp 'web-mode) ;web-mode is better at indenting multi-language HTML files
+        (web-mode)
+      (set-auto-mode t))
+    (indent-region (point-min) (point-max))
+    (buffer-substring-no-properties (point-min) (point-max))))
