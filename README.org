@@ -10,6 +10,10 @@ most browsers (the prototype works with one at a time display of slides even in
 Internet Explorer 5, but it isn't perfect there, and presentations are readable
 even with JavaScript turned off.)
 
+Output of this exporter will look like this:
+- [[https://dominela10.github.io/ox-sfhp/dark.html][dark theme]]
+- [[file:light.html][light theme]]
+
 * How will this exporter be used?
 This exporter should be pretty easy to install (put =ox-sfhp.el= file somewhere
 in ~load-path~ and add ~(require 'ox-sfhp)~ to your =.emacs= *when it will be
