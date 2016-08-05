@@ -1,0 +1,25 @@
+#+TITLE: ox-sfhp.el - export from org-mode to a single file HTML presentation
+
+This exporter is *early work in progress*, if you want to make a presentation
+that looks like the one that this exporter would create, you're currently better
+of editing the HTML file from the =prototype= directory.
+
+* What is this exporter supposed to do when it's finished?
+This exporter should create single file HTML presentations that should work in
+most browsers (the prototype works with one at a time display of slides even in
+Internet Explorer 5, but it isn't perfect there, and presentations are readable
+even with JavaScript turned off.)
+
+* How will this exporter be used?
+This exporter should be pretty easy to install (put =ox-sfhp.el= file somewhere
+in ~load-path~ and add ~(require 'ox-sfhp)~ to your =.emacs= *when it will be
+finished*.)
+
+* How the input file will look like?
+- Top level headlines will be slides
+  - Other headlines will be just centered text with progressively smaller fonts
+    (not implemented yet)
+  - There should be no paragraphs and other things outside of headlines
+- Links to pictures will be embedded into the presentation in base64, and their
+  text will be ~alt~ text for them, other links will be probably ommited
+
