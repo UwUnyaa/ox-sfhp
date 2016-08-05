@@ -334,7 +334,7 @@ button {
 ;;; Variables
 (defvar org-sfhp-color-theme "dark"     ;change this value later or something
   "Color theme for ox-sfhp export. Can be light or dark.") ;maybe an option to
-                                                           ;add custom one
+                                        ;add custom one
 
 (defvar org-sfhp-indent-output t        ;for testing
   "When non-nil, ox-sfhp's output is indented.")
@@ -401,7 +401,7 @@ button {
         ;;     (lambda (a s v b)
         ;;       (if a (org-html-export-to-html t s v b)
         ;; 	(org-open-file (org-html-export-to-html nil s v b)))))
-        
+
         ;; browse-url might be a bettter choice
         ))
 
@@ -505,8 +505,8 @@ button {
 ;; headline
 (defun org-sfhp-headline (type contents info) ;might not work well
   "Return a headline."
-    (let ((headline-number (car (org-export-get-headline-number type info))))
-      (format "<div id=\"slide%d\">\n<h1>%s</h1>\n%s</div>"
+  (let ((headline-number (car (org-export-get-headline-number type info))))
+    (format "<div id=\"slide%d\">\n<h1>%s</h1>\n%s</div>"
             headline-number
             (car (org-element-property :title type)) ; org-element-property returns a list
             contents)))
@@ -520,7 +520,9 @@ button {
   (interactive)
   (org-export-to-buffer 'sfhp "*Org SFHP Export*"
     async subtreep visible-only body-only ext-plist
-    (lambda () (set-auto-mode t))))
+    (lambda () (if (fboundp 'web-mode)
+                   (web-mode)
+                 (set-auto-mode t)))))
 
 (defun org-sfhp-export-to-file
     (&optional async subtreep visible-only body-only ext-plist)
