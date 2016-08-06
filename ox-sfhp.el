@@ -522,11 +522,10 @@ button {
 ;; headline
 (defun org-sfhp-headline (type contents info) ;might not work well
   "Return a headline."
-  (let ((headline-number (car (org-export-get-headline-number type info))))
-    (format "<div id=\"slide%d\">\n<h1>%s</h1>\n%s</div>"
-            headline-number
-            (car (org-element-property :title type)) ; org-element-property returns a list
-            contents)))
+  (format "<div id=\"slide%d\">\n<h1>%s</h1>\n%s</div>"
+          (car (org-export-get-headline-number type info))
+          (car (org-element-property :title type)) ; org-element-property returns a list
+          contents))
 
 ;; template
 
