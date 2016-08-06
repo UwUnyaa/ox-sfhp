@@ -506,7 +506,7 @@ button {
 ;; table
 (defun org-sfhp-table (type contents info)
   "Return contents as a HTML table."
-  (format "<table><tbody>\n%s</tbody></table>" contents))
+  (format "<table>\n%s</table>" contents))
 
 ;; table row
 (defun org-sfhp-table-row (type contents info)
