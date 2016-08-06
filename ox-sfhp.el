@@ -337,6 +337,11 @@ button {
     (">" . "&gt;"))
   "List of protected HTML characters and how they should be escaped.")
 
+(defconst org-sfhp-list-types
+  '((ordered . "ol")
+    (unordered . "ul"))
+  "List of types of lists and tags that contain them. Used by ox-sfhp.")
+
 ;;; Variables
 (defvar org-sfhp-color-theme "dark"     ;change this value later or something
   "Color theme for ox-sfhp export. Can be light or dark.") ;maybe an option to
@@ -489,7 +494,10 @@ button {
 
 ;; lists
 (defun org-sfhp-plain-list (type contents info)
-  (format "<ul>\n%s\n</ul>" contents))
+  (let ((tag
+         (cdr (assoc (org-element-property :type type)
+                     org-sfhp-list-types))))
+  (format "<%s>\n%s</%s>" tag contents tag)))
 
 (defun org-sfhp-item (type contents info)
   (format "<li>%s</li>" contents))
