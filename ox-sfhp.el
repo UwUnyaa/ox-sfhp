@@ -494,19 +494,22 @@ button {
 (defun org-sfhp-item (type contents info)
   (format "<li>%s</li>" contents))
 
-;; table stuff
-;; might require more work
+;;; table stuff
+;; table
 (defun org-sfhp-table (type contents info)
   "Return contents as a HTML table."
-  (format "<table><tbody>%s</tbody></table>" contents))
+  (format "<table><tbody>\n%s</tbody></table>" contents))
 
+;; table row
 (defun org-sfhp-table-row (type contents info)
   "Return a HTML table row."
-  (format "<tr>%s</tr>" contents))
+  (when (eq (org-element-property :type type) 'standard) ;ignore separators
+    (format "<tr>%s\n</tr>" contents)))
 
+;; table cell
 (defun org-sfhp-table-cell (type contents info)
   "Return a HTML table cell."
-  (format "<td>%s</td>" contents))
+  (format "\n<td>%s</td>" contents)) ;newlines at the end get removed for some reason
 
 ;; headline
 (defun org-sfhp-headline (type contents info) ;might not work well
