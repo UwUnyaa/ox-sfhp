@@ -331,6 +331,12 @@ button {
   "-sfhp.html"
   "Extension for files from ox-sfhp.")
 
+(defconst org-sfhp-protected-characters
+  '(("&" . "&amp;")                  ;order here is important, & should be first
+    ("<" . "&lt;")
+    (">" . "&gt;"))
+  "List of protected HTML characters and how they should be escaped.")
+
 ;;; Variables
 (defvar org-sfhp-color-theme "dark"     ;change this value later or something
   "Color theme for ox-sfhp export. Can be light or dark.") ;maybe an option to
@@ -537,6 +543,15 @@ button {
           "<div id=\"slides\">\n"
           contents
           "</div>\n</body>\n</html>"))
+
+;; plain text
+;; this function is pretty much like org-html-encode-plain-text in ox-html
+(defun org-sfhp-plain-text (content info)
+  "Escapes characters used by HTML. Used by ox-sfhp."
+  (mapc (lambda (pair)
+          (setq content (replace-regexp-in-string (car pair) (cdr pair) content t t)))
+        org-sfhp-protected-characters)
+  content)
 
 ;;; export functions
 
