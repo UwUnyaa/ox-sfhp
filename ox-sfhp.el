@@ -385,7 +385,7 @@ button {
     (table-cell . org-sfhp-table-cell)
     (table-row . org-sfhp-table-row)
     ;; (target . org-sfhp-ignore)
-    ;; (template . org-sfhp-ignore)
+    (template . org-sfhp-template)
     ;; (timestamp . org-sfhp-ignore)
     (underline . org-sfhp-underline)
     (verbatim . org-sfhp-monospace)
@@ -511,6 +511,32 @@ button {
             (car (org-element-property :title type)) ; org-element-property returns a list
             contents)))
 
+;; template
+
+(defun org-sfhp-template (contents info)
+  "Returns the outer template of the HTML document."
+  (concat "<!DOCTYPE html>\n"
+          "<html>\n"                    ; lang should be here
+          "<head>\n"
+          (format "<title>%s</title>\n"
+                  (let ((title (org-export-data (plist-get info :title) info)))
+                        (if (eq title "") ; title of a HTML document shouldn't be empty
+                            "Untitled presentation"
+                          title)))
+          org-sfhp-meta
+          org-sfhp-script
+          org-sfhp-style-common
+
+          ;; color theme
+          (cdr (assoc org-sfhp-color-theme org-sfhp-color-themes)) ;add a failsafe later
+
+          ;; hacks
+          org-sfhp-style-hack-oldie     ;add an option to ommit this
+          "</head>\n"
+          "<body onload=\"init();\">\n"
+          "<div id=\"slides\">\n"
+          contents
+          "</div>\n</body>\n</html>"))
 
 ;;; export functions
 
@@ -535,36 +561,9 @@ button {
 
 (defun org-sfhp-final-filter (contents backend info)
   "A final filter for ox-sfhp."
-  (let ((wrapped-output (org-sfhp-wrap-filter contents backend info)))
-    (when org-sfhp-indent-output
-      (setq wrapped-output (org-sfhp-indent-filter wrapped-output backend info)))
-    wrapped-output))
-
-(defun org-sfhp-wrap-filter (contents backend info)
-  "Filter that wraps output in HTML tags and inludes scripts."
-  (concat "<!DOCTYPE html>\n"
-          "<html>\n"                    ; lang should be here
-          "<head>\n"
-          (format "<title>%s</title>\n"
-                  (let ((title (org-export-data (plist-get info :title) info)))
-                        (if (eq title "") ; title of a HTML document shouldn't be empty
-                            "Untitled presentation"
-                          title)))
-          org-sfhp-meta
-          org-sfhp-script
-          org-sfhp-style-common
-
-          ;; color theme
-          (cdr (assoc org-sfhp-color-theme org-sfhp-color-themes)) ;add a failsafe later
-
-          ;; hacks
-          org-sfhp-style-hack-oldie     ;add an option to ommit this
-          "</head>\n"
-          "<body onload=\"init();\">\n"
-          "<div id=\"slides\">\n"
-          contents
-          "</div>\n</body>\n</html>"))  ; slides div is closed here, and then
-                                        ; everything else
+  (if org-sfhp-indent-output
+      (org-sfhp-indent-filter contents backend info)
+    contents))
 
 (defun org-sfhp-indent-filter (contents backend info)
   "Intent filter for ox-sfhp."
