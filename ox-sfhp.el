@@ -494,10 +494,11 @@ button {
 
 ;; lists
 (defun org-sfhp-plain-list (type contents info)
-  (let ((tag
-         (cdr (assoc (org-element-property :type type)
-                     org-sfhp-list-types))))
-  (format "<%s>\n%s</%s>" tag contents tag)))
+  (let ((tag (or
+              (cdr (assoc (org-element-property :type type)
+                          org-sfhp-list-types))
+              "ul")))
+    (format "<%s>\n%s</%s>" tag contents tag)))
 
 (defun org-sfhp-item (type contents info)
   (format "<li>%s</li>" contents))
