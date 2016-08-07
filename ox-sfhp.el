@@ -343,6 +343,10 @@ button {
     (descriptive . "dl"))
   "List of types of lists and tags that contain them. Used by ox-sfhp.")
 
+(defconst org-sfhp-special-paragraphs
+  '(item quote-block)
+  "List of paragraph parent elements that should be treated differently.")
+
 ;;; Variables
 (defvar org-sfhp-color-theme "dark"     ;change this value later or something
   "Color theme for ox-sfhp export. Can be light, dark or CSS code
@@ -481,8 +485,10 @@ Explorer in ox-sfhp output.")
 ;; paragraph
 (defun org-sfhp-paragraph (type contents info)
   "Return a HTML paragraph."
-  (cond ((eq (org-element-type (org-export-get-parent type)) 'item) contents)
-        (t (format "<p>\n%s</p>" contents))))
+  (if (member (org-element-type (org-export-get-parent type))
+              org-sfhp-special-paragraphs)
+      contents
+    (format "<p>\n%s</p>" contents)))
 
 ;; section
 (defun org-sfhp-section (type contents info)
