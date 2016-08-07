@@ -339,7 +339,8 @@ button {
 
 (defconst org-sfhp-list-types
   '((ordered . "ol")
-    (unordered . "ul"))
+    (unordered . "ul")
+    (descriptive . "dl"))
   "List of types of lists and tags that contain them. Used by ox-sfhp.")
 
 ;;; Variables
@@ -502,7 +503,14 @@ button {
     (format "<%s>\n%s</%s>" tag contents tag)))
 
 (defun org-sfhp-item (type contents info)
-  (format "<li>%s</li>" contents))
+  (if (eq
+       (org-element-property :type
+                             (org-export-get-parent type))
+       'descriptive)                    ;when a list is descriptive
+      (format "<dt>%s</dt>\n<dd>\n%s</dd>"
+              (car (org-element-property :tag type)) ;returns a list, so I car it
+              contents)
+    (format "<li>\n%s</li>" contents)))
 
 ;;; table stuff
 ;; table
