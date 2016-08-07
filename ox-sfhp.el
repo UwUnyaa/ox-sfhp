@@ -347,7 +347,7 @@ button {
   "Color theme for ox-sfhp export. Can be light or dark.") ;maybe an option to
                                         ;add custom one
 
-(defvar org-sfhp-indent-output t        ;for testing
+(defvar org-sfhp-indent-output (fboundp 'web-mode)
   "When non-nil, ox-sfhp's output is indented.")
 
 ;; backend
