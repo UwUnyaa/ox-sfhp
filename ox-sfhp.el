@@ -487,7 +487,8 @@ Explorer in ox-sfhp output.")
 ;; section
 (defun org-sfhp-section (type contents info)
   "Return a org-mode seciton."
-  contents)
+  (when (org-export-get-parent-headline type) ;ignore sections ouside headlines
+    contents))
 
 ;; maybe htmlize contents if it's a code block (better do it in a separate function)
 (defun org-sfhp-monospace-block (type contents info)
