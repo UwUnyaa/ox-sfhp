@@ -478,7 +478,7 @@ button {
 (defun org-sfhp-paragraph (type contents info)
   "Return a HTML paragraph."
   (cond ((eq (org-element-type (org-export-get-parent type)) 'item) contents)
-        (t (format "<p>%s</p>" contents))))
+        (t (format "<p>\n%s</p>" contents))))
 
 ;; section
 (defun org-sfhp-section (type contents info)
