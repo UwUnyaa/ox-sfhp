@@ -345,11 +345,15 @@ button {
 
 ;;; Variables
 (defvar org-sfhp-color-theme "dark"     ;change this value later or something
-  "Color theme for ox-sfhp export. Can be light or dark.") ;maybe an option to
-                                        ;add custom one
+  "Color theme for ox-sfhp export. Can be light, dark or CSS code
+  with a custom color theme.")
 
 (defvar org-sfhp-indent-output (fboundp 'web-mode)
   "When non-nil, ox-sfhp's output is indented.")
+
+(defvar org-sfhp-include-oldie-hacks t
+  "When non-nil, inlude a CSS hack for old versions of Internet
+Explorer in ox-sfhp output.")
 
 ;; backend
 (org-export-define-backend 'sfhp
@@ -541,28 +545,40 @@ button {
 
 (defun org-sfhp-template (contents info)
   "Returns the outer template of the HTML document."
-  (concat "<!DOCTYPE html>\n"
-          "<html>\n"                    ; lang should be here
-          "<head>\n"
-          (format "<title>%s</title>\n"
-                  (let ((title (org-export-data (plist-get info :title) info)))
-                        (if (eq title "") ; title of a HTML document shouldn't be empty
-                            "Untitled presentation"
-                          title)))
-          org-sfhp-meta
-          org-sfhp-script
-          org-sfhp-style-common
+  (let ((language (plist-get info :language)))
+    (concat "<!DOCTYPE html>\n"
+            (format "<html%s>\n" (if language
+                                     (concat " lang=\"" language "\"")
+                                   ""))
+            "<head>\n"
+            (format "<title>%s</title>\n"
+                    (let ((title (org-export-data (plist-get info :title) info)))
+                      (if (eq title "") ; title of a HTML document shouldn't be empty
+                          "Untitled presentation"
+                        title)))
+            org-sfhp-meta
+            org-sfhp-script
+            org-sfhp-style-common
+            ;; color theme
+            (or (cdr (assoc org-sfhp-color-theme org-sfhp-color-themes))
+                (concat "<style type=\"text/css\">\n"
+                        org-sfhp-color-theme
+                        "\n</style>"))   ;include the custom color theme
 
-          ;; color theme
-          (cdr (assoc org-sfhp-color-theme org-sfhp-color-themes)) ;add a failsafe later
-
-          ;; hacks
-          org-sfhp-style-hack-oldie     ;add an option to ommit this
-          "</head>\n"
-          "<body onload=\"init();\">\n"
-          "<div id=\"slides\">\n"
-          contents
-          "</div>\n</body>\n</html>"))
+            ;;; hacks
+            ;; CSS hack for old versions of Internet Explorer
+            (if org-sfhp-include-oldie-hacks
+                org-sfhp-style-hack-oldie
+              "")
+            ;; polish quotes
+            (if (string-equal language "pl")
+                org-sfhp-style-hack-polish-quotes
+              "")
+            "</head>\n"
+            "<body onload=\"init();\">\n"
+            "<div id=\"slides\">\n"
+            contents
+            "</div>\n</body>\n</html>")))
 
 ;; plain text
 ;; this function is pretty much like org-html-encode-plain-text in ox-html
