@@ -601,11 +601,15 @@ Explorer in ox-sfhp output.")
 ;; plain text
 ;; this function is pretty much like org-html-encode-plain-text in ox-html
 (defun org-sfhp-plain-text (content info)
+  "Plain text function for ox-sfhp."
+  (org-sfhp-escape-html-chars content))
+
+(defun org-sfhp-escape-html-chars (text)
   "Escapes characters used by HTML. Used by ox-sfhp."
   (mapc (lambda (pair)
-          (setq content (replace-regexp-in-string (car pair) (cdr pair) content t t)))
+          (setq text (replace-regexp-in-string (car pair) (cdr pair) text t t)))
         org-sfhp-protected-characters)
-  content)
+  text)
 
 ;;; export functions
 
