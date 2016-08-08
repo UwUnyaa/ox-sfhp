@@ -550,7 +550,8 @@ Explorer in ox-sfhp output.")
   "Return a headline."
   (let ((headline-number (car (org-export-get-headline-number type info)))
         (headline-level (org-export-get-relative-level type info))
-        (headline-title (car (org-element-property :title type))))
+        (headline-title (org-sfhp-escape-html-chars
+                         (car (org-element-property :title type)))))
     (if (= headline-level 1)
         (format "<div id=\"slide%d\">\n<h1>%s</h1>\n%s</div>"
                 headline-number headline-title contents)
