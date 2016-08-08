@@ -237,7 +237,7 @@ button {
  /* @licstart The following is the entire license notice for the JavaScript
     code in this page.
 
-    Copyright (C) 2016
+    Copyright (C) 2016 DoMiNeLa10
 
     The JavaScript code in this page is free software: you can redistribute
     it and/or modify it under the terms of the GNU General Public License
