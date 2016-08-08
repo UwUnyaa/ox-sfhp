@@ -564,28 +564,31 @@ Explorer in ox-sfhp output.")
 
 (defun org-sfhp-template (contents info)
   "Returns the outer template of the HTML document."
-  (let ((language (plist-get info :language)))
+  (let ((language (plist-get info :language))
+        (title (org-export-data (plist-get info :title) info)))
     (concat "<!DOCTYPE html>\n"
-            (format "<html%s>\n" (if language
-                                     (concat " lang=\"" language "\"")
-                                   ""))
+            (format "<html%s>\n"
+                    (if language
+                        (format " lang=\"%s\"" language)
+                      ""))
             "<head>\n"
+
+            ;; title
             (format "<title>%s</title>\n"
-                    (let ((title (org-export-data (plist-get info :title) info)))
-                      (if (eq title "") ; title of a HTML document shouldn't be empty
-                          "Untitled presentation"
-                        title)))
+                    (if (eq title "") ; title of a HTML document shouldn't be empty
+                        "Untitled presentation"
+                      title))
+            ;; common code
             org-sfhp-meta
             org-sfhp-script
             org-sfhp-style-common
+
             ;; color theme
             (or (cdr (assoc org-sfhp-color-theme org-sfhp-color-themes))
-                (concat "<style type=\"text/css\">\n"
-                        org-sfhp-color-theme
-                        "\n</style>"))   ;include the custom color theme
+                (format "<style type=\"text/css\">\n%s\n</style>"
+                        org-sfhp-color-theme))   ;include the custom color theme
 
-            ;;; hacks
-            ;; CSS hack for old versions of Internet Explorer
+            ;;; CSS hacks
             (if org-sfhp-include-oldie-hacks
                 org-sfhp-style-hack-oldie
               "")
@@ -593,6 +596,7 @@ Explorer in ox-sfhp output.")
             (if (string-equal language "pl")
                 org-sfhp-style-hack-polish-quotes
               "")
+
             "</head>\n"
             "<body onload=\"init();\">\n"
             "<div id=\"slides\">\n"
