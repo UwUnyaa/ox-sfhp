@@ -547,7 +547,7 @@ Explorer in ox-sfhp output.")
   (format "\n<td>%s</td>" contents)) ;newlines at the end get removed for some reason
 
 ;; headline
-(defun org-sfhp-headline (type contents info) ;might not work well
+(defun org-sfhp-headline (type contents info)
   "Return a headline."
   (let ((headline-number (car (org-export-get-headline-number type info)))
         (headline-level (org-export-get-relative-level type info))
