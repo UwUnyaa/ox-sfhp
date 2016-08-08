@@ -68,6 +68,11 @@
    font-family: monospace;
    line-height: 2;
  }
+ hr {
+   width: 95%;
+   height: 2px;
+   border: 0;
+ }
  pre {
    margin: 0.5em 2em;
    word-wrap: break-word; /* CSS 3 and IE 5.5+ */
