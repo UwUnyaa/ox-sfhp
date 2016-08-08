@@ -353,6 +353,14 @@ button {
   '(item quote-block)
   "List of paragraph parent elements that should be treated differently.")
 
+(defconst org-sfhp-mime-types
+  '(("png" . "image/png")
+    ("jpg" . "image/jpeg")
+    ("jpeg" . "image/jpeg")
+    ("webp" . "image/webp")
+    ("bmp" . "image/bmp"))
+  "List of image file types and their MIME types.")
+
 ;;; Variables
 (defvar org-sfhp-color-theme "dark"     ;change this value later or something
   "Color theme for ox-sfhp export. Can be light, dark or CSS code
@@ -391,7 +399,7 @@ Explorer in ox-sfhp output.")
     ;; (latex-environment . org-sfhp-ignore)
     (latex-fragment . org-sfhp-monospace-block)
     (line-break . org-sfhp-line-break)
-    ;; (link . org-sfhp-ignore) ;add this, but only for pictures
+    (link . org-sfhp-link) ;add this, but only for pictures
     (paragraph . org-sfhp-paragraph)
     (plain-list . org-sfhp-plain-list)
     (plain-text . org-sfhp-plain-text)
@@ -560,6 +568,28 @@ Explorer in ox-sfhp output.")
         (setq headline-level 6))
       (format "<h%d>%s</h%d>\n%s"
               headline-level headline-title headline-level contents))))
+
+;; link
+(defun org-sfhp-link (type contents info)
+  "Encodes images as base64. Used by ox-sfhp. Alt text can be
+  supressed by using \"decoration\" as the link description.
+  Links that aren't images aren't linked, but their description
+  is returned."
+  (let* ((linked-type (org-element-property :type type))
+         (file-path (org-element-property :path type))
+         (file-mime-type
+          (cdr (assoc (file-name-extension file-path) org-sfhp-mime-types))))
+    (if file-mime-type
+      (format "<img src=\"data:%s;base64,%s\" alt=\"%s\" />"
+              file-mime-type
+              (with-temp-buffer
+                (insert-file-contents-literally file-path)
+                (base64-encode-region (point-min) (point-max) t)
+                (buffer-string))
+              (cond ((string-equal contents "nil") "Undescribed picture")
+                    ((string-equal contents "decoration") "")
+                    (t contents)))
+      contents)))
 
 ;; template
 
