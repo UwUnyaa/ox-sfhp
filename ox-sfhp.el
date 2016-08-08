@@ -548,10 +548,16 @@ Explorer in ox-sfhp output.")
 ;; headline
 (defun org-sfhp-headline (type contents info) ;might not work well
   "Return a headline."
-  (format "<div id=\"slide%d\">\n<h1>%s</h1>\n%s</div>"
-          (car (org-export-get-headline-number type info))
-          (car (org-element-property :title type)) ; org-element-property returns a list
-          contents))
+  (let ((headline-number (car (org-export-get-headline-number type info)))
+        (headline-level (org-export-get-relative-level type info))
+        (headline-title (car (org-element-property :title type))))
+    (if (= headline-level 1)
+        (format "<div id=\"slide%d\">\n<h1>%s</h1>\n%s</div>"
+                headline-number headline-title contents)
+      (when (> headline-level 6)
+        (setq headline-level 6))
+      (format "<h%d>%s</h%d>\n%s"
+              headline-level headline-title headline-level contents))))
 
 ;; template
 
