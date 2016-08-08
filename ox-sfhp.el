@@ -455,7 +455,7 @@ Explorer in ox-sfhp output.")
 (defun org-sfhp-monospace (type contents info)
   "Return content as monospace text. Used for verbatim and code markup in org-mode."
   (format "<span class=\"monospace\">%s</span>"
-          (org-sfhp-plain-text (org-element-property :value type) info)))
+          (org-sfhp-escape-html-chars (org-element-property :value type))))
 
 (defun org-sfhp-underline (type contents info)
   "Return content as underline text in HTML format."
