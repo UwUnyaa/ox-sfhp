@@ -1,4 +1,5 @@
 ;;; ox-sfhp.el - export from org-mode to a single file HTML presentation
+;;; -*- coding: utf-8 -*-
 
 ;; Author: DoMiNeLa10 (https://github.com/DoMiNeLa10)
 
