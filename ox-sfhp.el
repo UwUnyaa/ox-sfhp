@@ -574,25 +574,32 @@ Explorer in ox-sfhp output.")
 
 ;; link
 (defun org-sfhp-link (type contents info)
-  "Encodes images as base64. Used by ox-sfhp. Alt text can be
-  supressed by using \"decoration\" as the link description.
-  Links that aren't images aren't linked, but their description
-  is returned."
+  "Returns an image encoded as base64, a link to a website or
+  just text from the link. Used by ox-sfhp. Alt text for image
+  can be supressed by using \"decoration\" as the link
+  description."
   (let* ((linked-type (org-element-property :type type))
          (file-path (org-element-property :path type))
+         (raw-link (org-element-property :raw-link type))
          (file-mime-type
           (cdr (assoc (file-name-extension file-path) org-sfhp-mime-types))))
-    (if file-mime-type
-      (format "</p>\n<img src=\"data:%s;base64,%s\" alt=\"%s\" />\n<p class=\"continuation\">"
-              file-mime-type
-              (with-temp-buffer
-                (insert-file-contents-literally file-path)
-                (base64-encode-region (point-min) (point-max) t)
-                (buffer-string))
-              (cond ((not contents) "Undescribed picture")
-                    ((string-equal contents "decoration") "")
-                    (t contents)))
-      contents)))
+    (cond (file-mime-type               ;known image format
+           (format "</p>\n<img src=\"data:%s;base64,%s\" alt=\"%s\" />\n<p class=\"continuation\">"
+                   file-mime-type
+                   (with-temp-buffer
+                     (insert-file-contents-literally file-path)
+                     (base64-encode-region (point-min) (point-max) t)
+                     (buffer-string))
+                   (cond ((not contents) "Undescribed picture")
+                         ((string-equal contents "decoration") "")
+                         (t contents))))
+          ((member linked-type '("http" "https")) ;link to a website
+           (format "<a href=\"%s\">%s</a>"
+                   raw-link (if contents
+                                contents
+                              raw-link))) ;fall back when there's no link text
+          (t contents))))                 ;just insert link text otherwise
+
 
 ;; template
 
