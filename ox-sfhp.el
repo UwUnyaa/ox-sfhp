@@ -346,6 +346,17 @@ button {
     (">" . "&gt;"))
   "List of protected HTML characters and how they should be escaped.")
 
+(defconst org-sfhp-tags
+  '((bold . "b")
+    (italic . "i")
+    (underline . "u")
+    (strike-through . "s")
+    (superscript . "sup")
+    (subscript . "sub")
+    (quote-block . "blockquote")
+    (paragraph . "p"))
+  "List of HTML tags. Used by ox-sfhp.")
+
 (defconst org-sfhp-list-types
   '((ordered . "ol")
     (unordered . "ul")
@@ -379,53 +390,33 @@ Explorer in ox-sfhp output.")
 
 ;; backend
 (org-export-define-backend 'sfhp
-  '((bold . org-sfhp-bold)
+  '((bold . org-sfhp-wrap-in-tag)
     (center-block . org-sfhp-paragraph)
-    ;; (clock . org-sfhp-ignore)
     (code . org-sfhp-monospace)
-    ;; (drawer . org-sfhp-ignore)
-    ;; (dynamic-block . org-sfhp-ignore)
-    ;; (entity . org-sfhp-ignore)
     (example-block . org-sfhp-monospace-block)
-    ;; (export-block . org-sfhp-ignore) ; maybe implement later
-    ;; (export-snippet . org-sfhp-ignore) ; maybe implement later
-    ;; (fixed-width . org-sfhp-ignore)
     (footnote-definition . org-sfhp-paragraph)
     (footnote-reference . org-sfhp-paragraph)
     (headline . org-sfhp-headline)
     (horizontal-rule . org-sfhp-horizontal-rule)
     (inline-src-block . org-sfhp-monospace)
-    ;; (inlinetask . org-sfhp-ignore)
-    ;; (inner-template . org-sfhp-ignore)
-    (italic . org-sfhp-italic)
-    (item . org-sfhp-item)
-    ;; (keyword . org-sfhp-ignore)
-    ;; (latex-environment . org-sfhp-ignore)
-    (latex-fragment . org-sfhp-monospace-block)
+    (italic . org-sfhp-wrap-in-tag)
+    (item . org-sfhp-wrap-in-tag)
     (line-break . org-sfhp-line-break)
-    (link . org-sfhp-link) ;add this, but only for pictures
+    (link . org-sfhp-link)
     (paragraph . org-sfhp-paragraph)
     (plain-list . org-sfhp-plain-list)
-    (plain-text . org-sfhp-plain-text)
-    ;; (planning . org-sfhp-ignore)
-    ;; (property-drawer . org-sfhp-ignore)
+    (plain-text . org-sfhp-escape-html-chars)
     (quote-block . org-sfhp-quote-block)
-    (quote-section . org-sfhp-paragraph)
-    ;; (radio-target . org-sfhp-ignore)
     (section . org-sfhp-section) ;
     (special-block . org-sfhp-paragraph)
-    (src-block . org-sfhp-monospace-block) ; maybe change later
-    ;; (statistics-cookie . org-sfhp-ignore)
-    (strike-through . org-sfhp-strike-through)
-    (subscript . org-sfhp-subscript)
-    (superscript . org-sfhp-superscript)
+    (strike-through . org-sfhp-wrap-in-tag)
+    (subscript . org-sfhp-wrap-in-tag)
+    (superscript . org-sfhp-wrap-in-tag)
     (table . org-sfhp-table)
     (table-cell . org-sfhp-table-cell)
     (table-row . org-sfhp-table-row)
-    ;; (target . org-sfhp-ignore)
     (template . org-sfhp-template)
-    ;; (timestamp . org-sfhp-ignore)
-    (underline . org-sfhp-underline)
+    (underline . org-sfhp-wrap-in-tag)
     (verbatim . org-sfhp-monospace)
     (verse-block . org-sfhp-quote-block)) ; maybe treat it like a block quote
   :export-block "SFHP"
@@ -451,45 +442,23 @@ Explorer in ox-sfhp output.")
 
 
 ;;; wrapping functions (or whatever)
-;; standard emphasis
-(defun org-sfhp-bold (type contents info)
-  "Return content as bold text in HTML format."
-  (format "<b>%s</b>" contents))
-
-(defun org-sfhp-strike-through (type contents info)
-  "Return content as strike-through text in HTML format."
-  (format "<s>%s</s>" contents))
-
-(defun org-sfhp-italic (type contents info)
-  "Return content as italic text in HTML format."
-  (format "<i>%s</i>" contents))
+(defun org-sfhp-wrap-in-tag (type contents info)
+  "Wraps contents in a HTML tag. Used by ox-sfhp."
+  (let ((tag (cdr (assoc (car type) org-sfhp-tags))))
+    (if tag
+        (format "<%s>%s</%s>" tag contents tag)
+      contents)))
 
 (defun org-sfhp-monospace (type contents info)
-  "Return content as monospace text. Used for verbatim and code markup in org-mode."
   (format "<span class=\"monospace\">%s</span>"
           (org-sfhp-escape-html-chars (org-element-property :value type))))
 
-(defun org-sfhp-underline (type contents info)
-  "Return content as underline text in HTML format."
-  (format "<u>%s</u>" contents))
-
-(defun org-sfhp-subscript (type contents info)
-  "Return contents as subscript HTML."
-  (format "<sub>%s</sub>" contents))
-
-(defun org-sfhp-superscript (type contents info)
-  "Return contents as subscript HTML."
-  (format "<sup>%s</sup>" contents))
-
-;; handlers for unsupported features
-(defun org-sfhp-insert-raw (type contents info)
-  "Return content from org-mode that isn't supported in a fancy way."
-  contents)
-
-(defun org-sfhp-ignore (&rest ARGS)
-  ;; (type contents info)
-  "Ommit content that makes no sense in a presentation."
-  "")
+(defun org-sfhp-monospace-block (type contents info)
+  (let* ((escaped-contents (org-sfhp-escape-html-chars
+                            (org-element-property :value type)))
+         (trimmed-contents (substring escaped-contents 0
+                                      (1- (length escaped-contents)))))
+    (format "<pre>%s</pre>" trimmed-contents)))
 
 ;; horizontal rule and line break
 (defun org-sfhp-horizontal-rule (type contents info)
@@ -514,15 +483,6 @@ Explorer in ox-sfhp output.")
   (when (org-export-get-parent-headline type) ;ignore sections ouside headlines
     contents))
 
-;; maybe htmlize contents if it's a code block (better do it in a separate function)
-(defun org-sfhp-monospace-block (type contents info)
-  "Return a <pre> block with contents."
-  (format "<pre>%s</pre>" contents))
-
-(defun org-sfhp-quote-block (type contents info)
-  "Return a block quote in HTML."
-  (format "<blockquote>%s</blockquote>" contents))
-
 ;; lists
 (defun org-sfhp-plain-list (type contents info)
   (let ((tag (or
@@ -541,19 +501,16 @@ Explorer in ox-sfhp output.")
               contents)
     (format "<li>\n%s</li>" contents)))
 
-;;; table stuff
 ;; table
 (defun org-sfhp-table (type contents info)
   "Return contents as a HTML table."
   (format "<table>\n%s</table>" contents))
 
-;; table row
 (defun org-sfhp-table-row (type contents info)
   "Return a HTML table row."
   (when (eq (org-element-property :type type) 'standard) ;ignore separators
     (format "<tr>%s\n</tr>" contents)))
 
-;; table cell
 (defun org-sfhp-table-cell (type contents info)
   "Return a HTML table cell."
   (format "\n<td>%s</td>" contents)) ;newlines at the end get removed for some reason
@@ -589,15 +546,22 @@ Explorer in ox-sfhp output.")
                   (downcase file-extension) ;sometimes file extension is upper case
                   org-sfhp-mime-types)))))
     (cond (file-mime-type               ;known image format
-           (format "</p>\n<img src=\"data:%s;base64,%s\" alt=\"%s\" />\n<p class=\"continuation\">"
-                   file-mime-type
-                   (with-temp-buffer
-                     (insert-file-contents-literally file-path)
-                     (base64-encode-region (point-min) (point-max) t)
-                     (buffer-string))
-                   (cond ((not contents) "Undescribed picture")
-                         ((string-equal contents "decoration") "")
-                         (t contents))))
+           (let ((in-paragraphp (eq 'paragraph (car (org-export-get-parent type)))))
+             (format "%s<img src=\"data:%s;base64,%s\" alt=\"%s\" />%s"
+                     (if in-paragraphp
+                         "</p>\n"
+                       "")
+                     file-mime-type
+                     (with-temp-buffer
+                       (insert-file-contents-literally file-path)
+                       (base64-encode-region (point-min) (point-max) t)
+                       (buffer-string))
+                     (cond ((not contents) "Undescribed picture")
+                           ((string-equal contents "decoration") "")
+                           (t contents))
+                     (if in-paragraphp
+                         "\n<p class=\"continuation\">"
+                       ""))))
           ((member linked-type '("http" "https")) ;link to a website
            (format "<a href=\"%s\">%s</a>"
                    raw-link (if contents
@@ -651,11 +615,7 @@ Explorer in ox-sfhp output.")
 
 ;; plain text
 ;; this function is pretty much like org-html-encode-plain-text in ox-html
-(defun org-sfhp-plain-text (content info)
-  "Plain text function for ox-sfhp."
-  (org-sfhp-escape-html-chars content))
-
-(defun org-sfhp-escape-html-chars (text)
+(defun org-sfhp-escape-html-chars (text &optional info)
   "Escapes characters used by HTML. Used by ox-sfhp."
   (mapc (lambda (pair)
           (setq text (replace-regexp-in-string (car pair) (cdr pair) text t t)))
@@ -685,6 +645,9 @@ Explorer in ox-sfhp output.")
 
 (defun org-sfhp-final-filter (contents backend info)
   "A final filter for ox-sfhp."
+  (setq contents                        ;remove empty paragraphs
+        (replace-regexp-in-string
+         "<p[^>]*>[ \t\n]*</p>" "" contents))
   (if org-sfhp-indent-output
       (org-sfhp-indent-filter contents backend info)
     contents))
