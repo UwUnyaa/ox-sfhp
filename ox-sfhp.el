@@ -53,6 +53,9 @@
    text-indent: 1em;
    margin: 0.5em 2em;
  }
+ .continuation {
+   text-indent: 0;
+ }
  blockquote:before {
    content: \"“\";
  }
@@ -580,7 +583,7 @@ Explorer in ox-sfhp output.")
          (file-mime-type
           (cdr (assoc (file-name-extension file-path) org-sfhp-mime-types))))
     (if file-mime-type
-      (format "<img src=\"data:%s;base64,%s\" alt=\"%s\" />"
+      (format "</p>\n<img src=\"data:%s;base64,%s\" alt=\"%s\" />\n<p class=\"continuation\">"
               file-mime-type
               (with-temp-buffer
                 (insert-file-contents-literally file-path)
