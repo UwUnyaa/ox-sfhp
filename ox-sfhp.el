@@ -582,8 +582,12 @@ Explorer in ox-sfhp output.")
   (let* ((linked-type (org-element-property :type type))
          (file-path (org-element-property :path type))
          (raw-link (org-element-property :raw-link type))
+         (file-extension (file-name-extension file-path))
          (file-mime-type
-          (cdr (assoc (file-name-extension file-path) org-sfhp-mime-types))))
+          (when (stringp file-extension)
+            (cdr (assoc
+                  (downcase file-extension) ;sometimes file extension is upper case
+                  org-sfhp-mime-types)))))
     (cond (file-mime-type               ;known image format
            (format "</p>\n<img src=\"data:%s;base64,%s\" alt=\"%s\" />\n<p class=\"continuation\">"
                    file-mime-type
@@ -599,7 +603,7 @@ Explorer in ox-sfhp output.")
                    raw-link (if contents
                                 contents
                               raw-link))) ;fall back when there's no link text
-          (t contents))))                 ;just insert link text otherwise
+          (t contents))))          ;just insert link text otherwise
 
 
 ;; template
