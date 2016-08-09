@@ -647,7 +647,7 @@ Explorer in ox-sfhp output.")
   "A final filter for ox-sfhp."
   (setq contents                        ;remove empty paragraphs
         (replace-regexp-in-string
-         "<p[^>]*>[ \t\n]*</p>" "" contents))
+         "<p[^>]*>[ \n]*</p>" "" contents))
   (if org-sfhp-indent-output
       (org-sfhp-indent-filter contents backend info)
     contents))
