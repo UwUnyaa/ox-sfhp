@@ -361,7 +361,8 @@ button {
     ("jpg" . "image/jpeg")
     ("jpeg" . "image/jpeg")
     ("webp" . "image/webp")
-    ("bmp" . "image/bmp"))
+    ("bmp" . "image/bmp")
+    ("gif" . "image/gif"))
   "List of image file types and their MIME types.")
 
 ;;; Variables
