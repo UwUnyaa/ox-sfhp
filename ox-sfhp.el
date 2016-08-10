@@ -428,9 +428,7 @@ Explorer in ox-sfhp output.")
         (?f "As a file" org-sfhp-export-to-file)
         (?o "As a file and open" org-sfhp-export-to-file-and-open)))
   :options-alist
-  '(
-    ;; options will go here
-    ))
+  '((:sfhp-theme "SFHP_THEME" nil org-sfhp-color-theme space)))
 
 
 ;;; wrapping functions (or whatever)
@@ -574,7 +572,8 @@ Explorer in ox-sfhp output.")
 (defun org-sfhp-template (contents info)
   "Returns the outer template of the HTML document."
   (let ((language (plist-get info :language))
-        (title (org-export-data (plist-get info :title) info)))
+        (title (org-export-data (plist-get info :title) info))
+        (theme (plist-get info :sfhp-theme)))
     (concat "<!DOCTYPE html>\n"
             (format "<html%s>\n"
                     (if language
@@ -593,9 +592,9 @@ Explorer in ox-sfhp output.")
             org-sfhp-style-common
 
             ;; color theme
-            (or (cdr (assoc org-sfhp-color-theme org-sfhp-color-themes))
-                (format "<style type=\"text/css\">\n%s\n</style>"
-                        org-sfhp-color-theme))   ;include the custom color theme
+            (or (cdr (assoc theme org-sfhp-color-themes))
+                (format "<style type=\"text/css\">\n%s\n</style>\n"
+                        theme))         ;include the custom color theme
 
             ;;; CSS hacks
             (if org-sfhp-include-oldie-hacks
