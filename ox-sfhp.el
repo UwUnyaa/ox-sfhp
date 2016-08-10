@@ -376,7 +376,7 @@ button {
   "List of image file types and their MIME types.")
 
 ;;; Variables
-(defvar org-sfhp-color-theme "dark"     ;change this value later or something
+(defvar org-sfhp-color-theme "dark"
   "Color theme for ox-sfhp export. Can be light, dark or CSS code
 with a custom color theme.")
 
