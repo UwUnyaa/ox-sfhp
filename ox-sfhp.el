@@ -352,7 +352,8 @@ button {
     (underline . "u")
     (strike-through . "s")
     (superscript . "sup")
-    (subscript . "sub"))
+    (subscript . "sub")
+    (quote-block . "blockquote"))
   "List of HTML tags. Used by ox-sfhp.")
 
 (defconst org-sfhp-list-types
@@ -404,8 +405,7 @@ Explorer in ox-sfhp output.")
     (paragraph . org-sfhp-paragraph)
     (plain-list . org-sfhp-plain-list)
     (plain-text . org-sfhp-escape-html-chars)
-    (quote-block . org-sfhp-quote-block)
-    (quote-section . org-sfhp-paragraph)
+    (quote-block . org-sfhp-wrap-in-tag)
     (section . org-sfhp-section) ;
     (special-block . org-sfhp-paragraph)
     (strike-through . org-sfhp-wrap-in-tag)
