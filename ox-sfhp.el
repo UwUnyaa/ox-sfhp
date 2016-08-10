@@ -402,6 +402,7 @@ Explorer in ox-sfhp output.")
     (item . org-sfhp-item)
     (line-break . org-sfhp-line-break)
     (link . org-sfhp-link)
+    (src-block . org-sfhp-src-block)
     (paragraph . org-sfhp-paragraph)
     (plain-list . org-sfhp-plain-list)
     (plain-text . org-sfhp-escape-html-chars)
@@ -520,6 +521,13 @@ Explorer in ox-sfhp output.")
         (setq headline-level 6))
       (format "<h%d>%s</h%d>\n%s"
               headline-level headline-title headline-level contents))))
+
+;; src block
+(defun org-sfhp-src-block (type contents info)
+  (let* ((code (org-sfhp-escape-html-chars
+                (car (org-export-unravel-code type))))
+         (trimmed-code (substring code 0 (1- (length code)))))
+    (format "<pre>%s</pre>" trimmed-code)))
 
 ;; link
 (defun org-sfhp-link (type contents info)
