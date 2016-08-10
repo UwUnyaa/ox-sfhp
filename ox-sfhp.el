@@ -619,7 +619,7 @@ be supressed by using \"decoration\" as the link description."
   text)
 
 ;;; export functions
-
+;;;###autoload
 (defun org-sfhp-export-to-buffer
     (&optional async subtreep visible-only body-only ext-plist)
   "Export current buffer to a single file HTML presentation buffer."
@@ -630,6 +630,7 @@ be supressed by using \"decoration\" as the link description."
                    (web-mode)
                  (set-auto-mode t)))))
 
+;;;###autoload
 (defun org-sfhp-export-to-file
     (&optional async subtreep visible-only body-only ext-plist)
   "Export current buffer to a single file HTML presentation file."
@@ -637,6 +638,7 @@ be supressed by using \"decoration\" as the link description."
   (org-export-to-file 'sfhp (org-export-output-file-name org-sfhp-extension)
     async subtreep visible-only body-only ext-plist))
 
+;;;###autoload
 (defun org-sfhp-export-to-file-and-open
     (&optional async subtreep visible-only body-only ext-plist)
   "Export current buffer to a single file HTML presentation file
@@ -666,3 +668,5 @@ and open it."
       (set-auto-mode t))
     (indent-region (point-min) (point-max))
     (buffer-substring-no-properties (point-min) (point-max))))
+
+(provide 'ox-sfhp)
