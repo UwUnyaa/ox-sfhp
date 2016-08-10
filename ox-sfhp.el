@@ -406,7 +406,7 @@ Explorer in ox-sfhp output.")
     (plain-list . org-sfhp-plain-list)
     (plain-text . org-sfhp-escape-html-chars)
     (quote-block . org-sfhp-wrap-in-tag)
-    (section . org-sfhp-section) ;
+    (section . org-sfhp-section)
     (special-block . org-sfhp-paragraph)
     (strike-through . org-sfhp-wrap-in-tag)
     (subscript . org-sfhp-wrap-in-tag)
