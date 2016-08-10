@@ -378,10 +378,12 @@ button {
 ;;; Variables
 (defvar org-sfhp-color-theme "dark"     ;change this value later or something
   "Color theme for ox-sfhp export. Can be light, dark or CSS code
-  with a custom color theme.")
+with a custom color theme.")
 
 (defvar org-sfhp-indent-output (fboundp 'web-mode)
-  "When non-nil, ox-sfhp's output is indented.")
+  "When non-nil, ox-sfhp's output is indented. Indenting
+shouldn't be done when `web-mode' isn't installed, because it can
+break source code blocks and other things.")
 
 (defvar org-sfhp-include-oldie-hacks t
   "When non-nil, inlude a CSS hack for old versions of Internet
@@ -440,10 +442,12 @@ Explorer in ox-sfhp output.")
       contents)))
 
 (defun org-sfhp-monospace (type contents info)
+  "Returns HTML with inline monospace text."
   (format "<span class=\"monospace\">%s</span>"
           (org-sfhp-escape-html-chars (org-element-property :value type))))
 
 (defun org-sfhp-monospace-block (type contents info)
+  "Returns HTML with monospace block."
   (let* ((escaped-contents (org-sfhp-escape-html-chars
                             (org-element-property :value type)))
          (trimmed-contents (substring escaped-contents 0
@@ -475,6 +479,7 @@ Explorer in ox-sfhp output.")
 
 ;; lists
 (defun org-sfhp-plain-list (type contents info)
+  "Returns the outer tags of a HTML list."
   (let ((tag (or
               (cdr (assoc (org-element-property :type type)
                           org-sfhp-list-types))
@@ -482,6 +487,7 @@ Explorer in ox-sfhp output.")
     (format "<%s>\n%s</%s>" tag contents tag)))
 
 (defun org-sfhp-item (type contents info)
+  "Returns item from a list in HTML tags within appropriate tags."
   (if (eq
        (org-element-property :type
                              (org-export-get-parent type))
@@ -522,6 +528,7 @@ Explorer in ox-sfhp output.")
 
 ;; src block
 (defun org-sfhp-src-block (type contents info)
+  "Returns a source code block as HTML code."
   (let* ((code (org-sfhp-escape-html-chars
                 (car (org-export-unravel-code type))))
          (trimmed-code (substring code 0 (1- (length code)))))
@@ -530,9 +537,8 @@ Explorer in ox-sfhp output.")
 ;; link
 (defun org-sfhp-link (type contents info)
   "Returns an image encoded as base64, a link to a website or
-  just text from the link. Used by ox-sfhp. Alt text for image
-  can be supressed by using \"decoration\" as the link
-  description."
+just text from the link. Used by ox-sfhp. Alt text for image can
+be supressed by using \"decoration\" as the link description."
   (let* ((linked-type (org-element-property :type type))
          (file-path (org-element-property :path type))
          (raw-link (org-element-property :raw-link type))
