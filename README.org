@@ -1,33 +1,60 @@
 #+TITLE: ox-sfhp.el - export from org-mode to a single file HTML presentation
 
-This exporter is *early work in progress*, if you want to make a presentation
-that looks like the one that this exporter would create, you're currently better
-off editing the HTML file from the =prototype= directory.
+This extension allows to export from org-mode to single file HTML
+presentations. It works now, but it might still have some bugs.
 
-* What is this exporter supposed to do when it's finished?
-This exporter should create single file HTML presentations that should work in
-most browsers (the prototype works with one at a time display of slides even in
-Internet Explorer 5, but it isn't perfect there, and presentations are readable
-even with JavaScript turned off.)
+* Installation:
+1. Make sure you are using =UTF-8= as your coding system.
 
+   This extension doesn't support other coding systems, because they could
+   break things like pretty quotes around quote blocks.
+
+2. Put =ox-sfhp.el= somewhere in =load-path=.
+
+3. Add =(require 'ox-sfhp)= to your =.emacs=
+
+4. (Optional) You can =byte-compile-file= to make this extension run faster.
+
+* How do the presentations look like?
 Output of this exporter will look like this:
 - [[https://dominela10.github.io/ox-sfhp/dark.html][Dark theme]]
 - [[https://dominela10.github.io/ox-sfhp/light.html][Light theme]]
 
-* How will this exporter be used?
-This exporter should be pretty easy to install (put =ox-sfhp.el= file somewhere
-in ~load-path~ and add ~(require 'ox-sfhp)~ to your =.emacs= *when it will be
-finished*.)
+These are prototype presentations written before work on this exporter
+started, but they look pretty much like output from it.
 
 * How the input file will look like?
 - Top level headlines will be slides
-  - Other headlines will be just centered text with progressively smaller fonts
-    (not implemented yet)
-  - There should be no paragraphs and other things outside of headlines
-- Links to pictures will be embedded into the presentation in base64, and their
-  text will be ~alt~ text for them, other links will be probably omitted
+  - Other headlines will be just centered text with progressively smaller
+    fonts (=<h2>= through =<h6>= tags)
+  - Paragraphs outside of headlines are ignored
+- Links to pictures will be included in output, encoded as base64
+  - Descriptions will be the =alt= text of pictures. They can be omitted, but
+    they can be useful if a browser can't display pictures encoded as base64
+    (which happens in old versions of Internet Explorer)
+
+* Themes:
+The default theme is dark. Themes can be changed by adding following line to
+your org file:
+: #+SFHP_THEME: value
+
+The value can be set to:
+- One of default themes:
+  - light
+  - dark
+- A custom theme:
+  - It should be just the CSS code with that theme, without =<style>= tags
+    around it.
+
+* Reporting bugs:
+When reporting a bug, please include link to a [[https://gist.github.com/][gist]] with org-mode file that
+causes the problem. Some features of org-mode aren't supported by this
+extension, so some parts of input file might be omitted.
 
 * Optional dependencies:
 Extensions listed here are optional, and they aren't required by this extension
 to work.
-- [[https://github.com/fxbois/web-mode][web-mode]] :: for better indentation of output files
+- [[https://github.com/fxbois/web-mode][web-mode]] :: Used to indent files. This exporter can be set to use HTML mode
+     that comes with GNU Emacs to indent output files, but it can't indent
+     them properly and might break things like source blocks, so it isn't
+     recommended. Files aren't indented by default if =web-mode= isn't found.
