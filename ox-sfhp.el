@@ -425,15 +425,7 @@ Explorer in ox-sfhp output.")
   '(?p "Export to a single file HTML presentation"
        ((?b "As a buffer" org-sfhp-export-to-buffer)
         (?f "As a file" org-sfhp-export-to-file)
-        ;; (?o "As a file and open"        ; will this even work?
-        ;;     (lambda (a s v b)
-        ;;       (if a (org-html-export-to-html t s v b)
-        ;; 	(org-open-file (org-html-export-to-html nil s v b)))))
-
-        ;; browse-url might be a bettter choice
-        ))
-
-  ;; change this later
+        (?o "As a file and open" org-sfhp-export-to-file-and-open)))
   :options-alist
   '(
     ;; options will go here
@@ -639,6 +631,15 @@ Explorer in ox-sfhp output.")
   (interactive)
   (org-export-to-file 'sfhp (org-export-output-file-name org-sfhp-extension)
     async subtreep visible-only body-only ext-plist))
+
+(defun org-sfhp-export-to-file-and-open
+    (&optional async subtreep visible-only body-only ext-plist)
+  "Export current buffer to a single file HTML presentation file
+and open it."
+  (interactive)
+  (org-open-file (org-sfhp-export-to-file
+                  async subtreep visible-only body-only ext-plist)))
+
 
 ;;; filters
 
