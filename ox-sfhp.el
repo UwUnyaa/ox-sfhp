@@ -561,7 +561,6 @@ be supressed by using \"decoration\" as the link description."
 
 
 ;; template
-
 (defun org-sfhp-template (contents info)
   "Returns the outer template of the HTML document."
   (let ((language (plist-get info :language))
@@ -644,7 +643,6 @@ and open it."
 
 
 ;;; filters
-
 (defun org-sfhp-final-filter (contents backend info)
   "A final filter for ox-sfhp."
   (setq contents                        ;remove empty paragraphs
