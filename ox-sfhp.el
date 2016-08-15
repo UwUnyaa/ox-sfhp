@@ -259,8 +259,6 @@ button {
     @licend The above is the entire license notice for the JavaScript code
     in this page. */
  var currentSlide = 1, totalSlides, left, right, counter;
- /* change value of currentSlide to open up the presentation on that slide */
- /* revert to 1 later */
  function init () { /* init function to be run onload */
    totalSlides = document.getElementById(\"slides\").children.length;
    for (i = 1; i <= totalSlides; i++) /* hide all slides */
