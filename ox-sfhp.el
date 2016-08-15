@@ -151,7 +151,7 @@
 
 (defvar org-sfhp-color-themes
   '(("dark" . "<style type=\"text/css\">
-/* dark style */
+/* dark theme */
 body {
   background-color: #222;
   color: #AAA;
@@ -178,7 +178,7 @@ button {
 }
 </style>\n")
     ("light" . "<style type=\"text/css\">
-/* light style */
+/* light theme */
 body {
   background-color: #EEE;
   color: #111;
