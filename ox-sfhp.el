@@ -376,10 +376,6 @@ button {
   "List of image file types and their MIME types.")
 
 ;;; Variables
-(defvar org-sfhp-color-theme "dark"
-  "Color theme for ox-sfhp export. Can be light, dark or CSS code
-with a custom color theme.")
-
 (defvar org-sfhp-indent-output (fboundp 'web-mode)
   "When non-nil, ox-sfhp's output is indented. Indenting
 shouldn't be done when `web-mode' isn't installed, because it can
@@ -423,7 +419,7 @@ Explorer in ox-sfhp output.")
         (?f "As a file" org-sfhp-export-to-file)
         (?o "As a file and open" org-sfhp-export-to-file-and-open)))
   :options-alist
-  '((:sfhp-theme "SFHP_THEME" nil org-sfhp-color-theme space)))
+  '((:sfhp-theme "SFHP_THEME" nil "dark" space)))
 
 ;;; wrapping functions (or whatever)
 (defun org-sfhp-wrap-in-tag (type contents info)
