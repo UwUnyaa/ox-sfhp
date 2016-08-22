@@ -46,6 +46,21 @@ The value can be set to:
   - It should be just the CSS code with that theme, without =<style>= tags
     around it.
 
+* Custom backgrounds:
+If you want to use a picture as a background for your presentation you can
+use:
+: #+SFHP_BACKGROUND: image.jpg
+=image.jpg= should be a path to the file you want to use as the background
+(preferably a relative path to it.)
+
+If your image is small, and you want it to be repeated use:
+: #+SFHP_BACKGROUND_REPEAT: repeat
+=repeat= can be be anything else. It will work as long as there's a line that
+defines this option, so you can use any other name that you find fitting.
+
+Big images can cause long export times, and they won't be displayed in
+browsers that don't support base64 in CSS.
+
 * Reporting bugs:
 When reporting a bug, please include link to a [[https://gist.github.com/][gist]] with org-mode file that
 causes the problem. Some features of org-mode aren't supported by this
