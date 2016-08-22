@@ -595,6 +595,7 @@ MIME type. File is assumed to exist."
                     (if (eq title "") ; title of a HTML document shouldn't be empty
                         "Untitled presentation"
                       title))
+
             ;; common code
             org-sfhp-meta
             org-sfhp-script
