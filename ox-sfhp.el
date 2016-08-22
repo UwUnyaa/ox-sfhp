@@ -1,6 +1,6 @@
 ;;; ox-sfhp.el - export from org-mode to a single file HTML presentation
 ;;; -*- coding: utf-8 -*-
-;;; Version: 1.0.1
+;;; Version: 1.1.0
 
 ;; Author: DoMiNeLa10 (https://github.com/DoMiNeLa10)
 
@@ -418,7 +418,9 @@ Explorer in ox-sfhp output.")
         (?f "As a file" org-sfhp-export-to-file)
         (?o "As a file and open" org-sfhp-export-to-file-and-open)))
   :options-alist
-  '((:sfhp-theme "SFHP_THEME" nil "dark" space)))
+  '((:sfhp-theme "SFHP_THEME" nil "dark" space)
+    (:sfhp-background-file "SFHP_BACKGROUND" nil nil space)
+    (:sfhp-background-repeat "SFHP_BACKGROUND_REPEAT" nil nil space)))
 
 ;;; wrapping functions (or whatever)
 (defun org-sfhp-wrap-in-tag (type contents info)
@@ -537,15 +539,11 @@ be supressed by using \"decoration\" as the link description."
                   org-sfhp-mime-types)))))
     (cond (file-mime-type               ;known image format
            (let ((in-paragraphp (eq 'paragraph (car (org-export-get-parent type)))))
-             (format "%s<img src=\"data:%s;base64,%s\" alt=\"%s\" />%s"
+             (format "%s<img src=\"%s\" alt=\"%s\" />%s"
                      (if in-paragraphp
                          "</p>\n"
                        "")
-                     file-mime-type
-                     (with-temp-buffer
-                       (insert-file-contents-literally file-path)
-                       (base64-encode-region (point-min) (point-max) t)
-                       (buffer-string))
+                     (org-sfhp-encode-as-base64 file-mime-type file-path)
                      (cond ((not contents) "Undescribed picture")
                            ((string-equal contents "decoration") "")
                            (t contents))
@@ -559,13 +557,32 @@ be supressed by using \"decoration\" as the link description."
                               raw-link))) ;fall back when there's no link text
           (t contents))))          ;just insert link text otherwise
 
+;; encode as base64
+(defun org-sfhp-encode-as-base64 (mime-type file-path)
+  "Returns an image as a base64-encoded string along with its
+MIME type. File is assumed to exist."
+  (format "data:%s;base64,%s"
+          mime-type
+          (with-temp-buffer
+            (insert-file-contents-literally file-path)
+            (base64-encode-region (point-min) (point-max) t)
+            (buffer-string))))
 
 ;; template
 (defun org-sfhp-template (contents info)
   "Returns the outer template of the HTML document."
-  (let ((language (plist-get info :language))
-        (title (org-export-data (plist-get info :title) info))
-        (theme (plist-get info :sfhp-theme)))
+  (let* ((language (plist-get info :language))
+         (title (org-export-data (plist-get info :title) info))
+         (theme (plist-get info :sfhp-theme))
+         (background-file (plist-get info :sfhp-background-file))
+         (background-path (when (and background-file
+                                     (file-exists-p background-file))
+                            (expand-file-name background-file)))
+         (background-mime-type (when background-path
+                                 (cdr (assoc (downcase (file-name-extension
+                                                        background-path))
+                                             org-sfhp-mime-types))))
+         (background-repeat (plist-get info :sfhp-background-repeat)))
     (concat "<!DOCTYPE html>\n"
             (format "<html%s>\n"
                     (if language
@@ -582,6 +599,26 @@ be supressed by using \"decoration\" as the link description."
             org-sfhp-meta
             org-sfhp-script
             org-sfhp-style-common
+
+            ;; background image
+            (if background-path
+                (if background-mime-type
+                    (concat "<style type=\"text/css\">\n"
+                            "  /* background image */\n"
+                            "  body {\n"
+                            "    background-attachment: fixed;\n"
+                            (if background-repeat
+                                ""
+                              "    background-size: cover;\n")
+                            (format "    background-image: url(\"%s\");\n"
+                                    (org-sfhp-encode-as-base64
+                                     background-mime-type background-path))
+                            "</style>")
+                  (message "ox-sfhp: unknown extension of background image")
+                  "")
+              (when background-file
+                (message "ox-sfhp: specified background image doesn't exist"))
+              "")
 
             ;; color theme
             (or (cdr (assoc theme org-sfhp-color-themes))
