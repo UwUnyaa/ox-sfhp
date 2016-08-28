@@ -26,9 +26,12 @@
 ;;; Variables and constants:
 
 ;;; Constants with code
+(defconst org-sfhp-style-tags
+  '("<style type=\"text/css\">\n" . "</style>\n")
+  "Style tags for ox-sfhp.")
+
 (defconst org-sfhp-style-common
-  "<style type=\"text/css\">
- /* common style, no colors should go in here */
+" /* common style */
  body {
    margin: 0;
    font-family: sans, arial, helvetica;
@@ -146,13 +149,11 @@
  img {
    max-width: 90%;
    margin: 1em;
- }
-</style>\n"
+ }\n"
   "Common style for ox-sfhp")
 
 (defvar org-sfhp-color-themes
-  '(("dark" . "<style type=\"text/css\">
-/* dark theme */
+  '(("dark" . " /* dark theme */
 body {
   background-color: #222;
   color: #AAA;
@@ -176,10 +177,8 @@ button {
 }
 #buttons {
   background-color: #333;
-}
-</style>\n")
-    ("light" . "<style type=\"text/css\">
-/* light theme */
+}\n")
+    ("light" . " /* light theme */
 body {
   background-color: #EEE;
   color: #111;
@@ -206,8 +205,7 @@ button {
 }
 #buttons {
   background-color: #BBB;
-}
-</style>\n"))
+}\n"))
   "Color themes for ox-sfhp.")
 
 (defconst org-sfhp-style-hack-oldie
@@ -225,15 +223,13 @@ button {
   Internet Explorer that don't support position: fixed;")
 
 (defconst org-sfhp-style-hack-polish-quotes
-  "<style type=\"text/css\">
- /* polish quotes */
+  " /* polish quotes */
  blockquote:before {
    content: \"„\" !important;
  }
  blockquote:after {
    content: \"”\" !important;
- }
-</style>\n"
+ }\n"
   "A hack that overrides quotes with polish quotation marks")
 
 (defconst org-sfhp-script
@@ -599,7 +595,20 @@ MIME type. File is assumed to exist."
             ;; common code
             org-sfhp-meta
             org-sfhp-script
+
+            ;; CSS
+            (car org-sfhp-style-tags)   ; <style> tag
             org-sfhp-style-common
+
+            ;; color theme
+            (or (cdr (assoc theme org-sfhp-color-themes))
+                (format "<style type=\"text/css\">\n%s\n</style>\n"
+                        theme))         ;include the custom color theme
+
+            ;; polish quotes
+            (if (string-equal language "pl")
+                org-sfhp-style-hack-polish-quotes
+              "")
 
             ;; background image
             (if background-path
@@ -621,18 +630,11 @@ MIME type. File is assumed to exist."
                 (message "ox-sfhp: specified background image doesn't exist"))
               "")
 
-            ;; color theme
-            (or (cdr (assoc theme org-sfhp-color-themes))
-                (format "<style type=\"text/css\">\n%s\n</style>\n"
-                        theme))         ;include the custom color theme
+            (cdr org-sfhp-style-tags)   ; </style> tag
 
-            ;;; CSS hacks
+            ;;; IE hacks
             (if org-sfhp-include-oldie-hacks
                 org-sfhp-style-hack-oldie
-              "")
-            ;; polish quotes
-            (if (string-equal language "pl")
-                org-sfhp-style-hack-polish-quotes
               "")
 
             "</head>\n"
