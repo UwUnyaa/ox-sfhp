@@ -416,7 +416,8 @@ Explorer in ox-sfhp output.")
   :options-alist
   '((:sfhp-theme "SFHP_THEME" nil "dark" space)
     (:sfhp-background-file "SFHP_BACKGROUND" nil nil space)
-    (:sfhp-background-repeat "SFHP_BACKGROUND_REPEAT" nil nil space)))
+    (:sfhp-background-repeat "SFHP_BACKGROUND_REPEAT" nil nil space)
+    (:sfhp-no-base64 "SFHP_NO_BASE64" nil nil space)))
 
 ;;; wrapping functions (or whatever)
 (defun org-sfhp-wrap-in-tag (type contents info)
@@ -539,7 +540,7 @@ be supressed by using \"decoration\" as the link description."
                      (if in-paragraphp
                          "</p>\n"
                        "")
-                     (org-sfhp-encode-as-base64 file-mime-type file-path)
+                     (org-sfhp-encode-as-base64 file-mime-type file-path info)
                      (cond ((not contents) "Undescribed picture")
                            ((string-equal contents "decoration") "")
                            (t contents))
@@ -554,15 +555,18 @@ be supressed by using \"decoration\" as the link description."
           (t contents))))          ;just insert link text otherwise
 
 ;; encode as base64
-(defun org-sfhp-encode-as-base64 (mime-type file-path)
+(defun org-sfhp-encode-as-base64 (mime-type file-path info)
   "Returns an image as a base64-encoded string along with its
-MIME type. File is assumed to exist."
-  (format "data:%s;base64,%s"
-          mime-type
-          (with-temp-buffer
-            (insert-file-contents-literally file-path)
-            (base64-encode-region (point-min) (point-max) t)
-            (buffer-string))))
+MIME type or a relative path to a file. File is assumed to
+exist."
+  (if (plist-get info :sfhp-no-base64)
+      (file-relative-name file-path)
+    (format "data:%s;base64,%s"
+            mime-type
+            (with-temp-buffer
+              (insert-file-contents-literally file-path)
+              (base64-encode-region (point-min) (point-max) t)
+              (buffer-string)))))
 
 ;; template
 (defun org-sfhp-template (contents info)
@@ -622,7 +626,7 @@ MIME type. File is assumed to exist."
                               "    background-size: cover;\n")
                             (format "    background-image: url(\"%s\");\n"
                                     (org-sfhp-encode-as-base64
-                                     background-mime-type background-path))
+                                     background-mime-type background-path info))
                             "</style>")
                   (message "ox-sfhp: unknown extension of background image")
                   "")
