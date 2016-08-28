@@ -28,10 +28,6 @@ started, but they look pretty much like output from it.
   - Other headlines will be just centered text with progressively smaller
     fonts (=<h2>= through =<h6>= tags)
   - Paragraphs outside of headlines are ignored
-- Links to pictures will be included in output, encoded as base64
-  - Descriptions will be the =alt= text of pictures. They can be omitted, but
-    they can be useful if a browser can't display pictures encoded as base64
-    (which happens in old versions of Internet Explorer)
 
 * Themes:
 The default theme is dark. Themes can be changed by adding following line to
@@ -46,6 +42,24 @@ The value can be set to:
   - It should be just the CSS code with that theme, without =<style>= tags
     around it.
 
+* Linking images:
+Links to images will be included in output, encoded as base64 by default.
+They can be linked instead with relative paths using:
+: #+SFHP_NO_BASE64:
+This will result in output that won't display images if they aren't provided
+with the file (which breaks the single file purpose of this exporter.) Linking
+images instead of encoding them as base64 makes exporting faster, (good for
+quick tests of how the output looks like, and big pictures slow down Emacs
+significantly) and the output is more compatible with older browsers that
+don't support base64 (like old versions of IE.)
+
+Descriptions of links will be the =alt= text of pictures. They can be useful
+if the picture can't be displayed for some reason.
+
+The value of =#+SFHP_NO_BASE64= and =#+SFHP_BACKGROUND_REPEAT:= can be set to
+anything, and they can be disabled by removing lines that define them from the
+org file.
+
 * Custom backgrounds:
 If you want to use a picture as a background for your presentation you can
 use:
@@ -54,12 +68,20 @@ use:
 (preferably a relative path to it.)
 
 If your image is small, and you want it to be repeated use:
-: #+SFHP_BACKGROUND_REPEAT: repeat
-=repeat= can be be anything else. It will work as long as there's a line that
-defines this option, so you can use any other name that you find fitting.
+: #+SFHP_BACKGROUND_REPEAT:
 
-Big images can cause long export times, and they won't be displayed in
-browsers that don't support base64 in CSS.
+* Moving around the presentation:
+Slides on the presentation can be changed by clicking (or touching) buttons on
+the bottom of the screen, or by pressing these keys:
+- left and right arrow keys
+- =f=, =b=, =n=, =p= keys
+- =h=, =j=, =k=, =l= keys
+Using keys to change slides doesn't seem to work on old versions of Internet
+Explorer, but clicking buttons works.
+
+If the browser has JavaScript disabled, or it doesn't support it, all slides
+will be displayed from top to bottom, and the presentation can be simply
+scrolled through.
 
 * Reporting bugs:
 When reporting a bug, please include link to a [[https://gist.github.com/][gist]] with org-mode file that
