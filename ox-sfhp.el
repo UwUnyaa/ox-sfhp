@@ -626,7 +626,8 @@ exist."
                        "    background-size: cover;\n")
                      (format "    background-image: url(\"%s\");\n"
                              (org-sfhp-encode-as-base64
-                              background-mime-type background-path info)))
+                              background-mime-type background-path info))
+                     "  }\n")
                   (message "ox-sfhp: unknown extension of background image")
                   "")
               (when background-file
