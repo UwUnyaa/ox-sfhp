@@ -617,8 +617,7 @@ exist."
             ;; background image
             (if background-path
                 (if background-mime-type
-                    (concat "<style type=\"text/css\">\n"
-                            "  /* background image */\n"
+                    (concat "  /* background image */\n"
                             "  body {\n"
                             "    background-attachment: fixed;\n"
                             (if background-repeat
@@ -626,8 +625,7 @@ exist."
                               "    background-size: cover;\n")
                             (format "    background-image: url(\"%s\");\n"
                                     (org-sfhp-encode-as-base64
-                                     background-mime-type background-path info))
-                            "</style>")
+                                     background-mime-type background-path info)))
                   (message "ox-sfhp: unknown extension of background image")
                   "")
               (when background-file
