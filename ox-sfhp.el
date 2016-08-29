@@ -503,14 +503,17 @@ Explorer in ox-sfhp output.")
   (let ((headline-number (car (org-export-get-headline-number type info)))
         (headline-level (org-export-get-relative-level type info))
         (headline-title (org-sfhp-escape-html-chars
-                         (car (org-element-property :title type)))))
+                         (car (org-element-property :title type))))
+        (contents-or-empty (if contents
+                               contents
+                             "")))      ; empty paragraph is "nil" otherwise
     (if (= headline-level 1)
         (format "<div id=\"slide%d\">\n<h1>%s</h1>\n%s</div>"
-                headline-number headline-title contents)
+                headline-number headline-title contents-or-empty)
       (when (> headline-level 6)
         (setq headline-level 6))
       (format "<h%d>%s</h%d>\n%s"
-              headline-level headline-title headline-level contents))))
+              headline-level headline-title headline-level contents-or-empty))))
 
 ;; src block
 (defun org-sfhp-src-block (type contents info)
