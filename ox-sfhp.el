@@ -336,7 +336,7 @@ button {
   "Extension for files from ox-sfhp.")
 
 (defconst org-sfhp-protected-characters
-  '(("&" . "&amp;")                  ;order here is important, & should be first
+  '(("&" . "&amp;")               ; order here is important, & should be first
     ("<" . "&lt;")
     (">" . "&gt;"))
   "List of protected HTML characters and how they should be escaped.")
@@ -460,7 +460,7 @@ Explorer in ox-sfhp output.")
 ;; section
 (defun org-sfhp-section (type contents info)
   "Return a org-mode seciton."
-  (when (org-export-get-parent-headline type) ;ignore sections ouside headlines
+  (when (org-export-get-parent-headline type) ; ignore sections ouside headlines
     contents))
 
 ;; lists
@@ -477,9 +477,9 @@ Explorer in ox-sfhp output.")
   (if (eq
        (org-element-property :type
                              (org-export-get-parent type))
-       'descriptive)                    ;when a list is descriptive
+       'descriptive)                    ; when a list is descriptive
       (format "<dt>%s</dt>\n<dd>\n%s</dd>"
-              (car (org-element-property :tag type)) ;returns a list, so I car it
+              (car (org-element-property :tag type)) ; returns a list, so I car it
               contents)
     (format "<li>\n%s</li>" contents)))
 
@@ -490,12 +490,12 @@ Explorer in ox-sfhp output.")
 
 (defun org-sfhp-table-row (type contents info)
   "Return a HTML table row."
-  (when (eq (org-element-property :type type) 'standard) ;ignore separators
+  (when (eq (org-element-property :type type) 'standard) ; ignore separators
     (format "<tr>%s\n</tr>" contents)))
 
 (defun org-sfhp-table-cell (type contents info)
   "Return a HTML table cell."
-  (format "\n<td>%s</td>" contents)) ;newlines at the end get removed for some reason
+  (format "\n<td>%s</td>" contents)) ; newlines at the end get removed for some reason
 
 ;; headline
 (defun org-sfhp-headline (type contents info)
@@ -535,9 +535,9 @@ be supressed by using \"decoration\" as the link description."
          (file-mime-type
           (when (stringp file-extension)
             (cdr (assoc
-                  (downcase file-extension) ;sometimes file extension is upper case
+                  (downcase file-extension) ; sometimes file extension is upper case
                   org-sfhp-mime-types)))))
-    (cond (file-mime-type               ;known image format
+    (cond (file-mime-type               ; known image format
            (let ((in-paragraphp (eq 'paragraph (car (org-export-get-parent type)))))
              (format "%s<img src=\"%s\" alt=\"%s\" />%s"
                      (if in-paragraphp
@@ -550,12 +550,12 @@ be supressed by using \"decoration\" as the link description."
                      (if in-paragraphp
                          "\n<p class=\"continuation\">"
                        ""))))
-          ((member linked-type '("http" "https")) ;link to a website
+          ((member linked-type '("http" "https")) ; link to a website
            (format "<a href=\"%s\">%s</a>"
                    raw-link (if contents
                                 contents
-                              raw-link))) ;fall back when there's no link text
-          (t contents))))          ;just insert link text otherwise
+                              raw-link))) ; fall back when there's no link text
+          (t contents))))          ; just insert link text otherwise
 
 ;; encode as base64
 (defun org-sfhp-encode-as-base64 (mime-type file-path info)
@@ -692,7 +692,7 @@ and open it."
 ;;; filters
 (defun org-sfhp-final-filter (contents backend info)
   "A final filter for ox-sfhp."
-  (setq contents                        ;remove empty paragraphs
+  (setq contents                        ; remove empty paragraphs
         (replace-regexp-in-string
          "<p\\( class=\"continuation\"\\)?>[ \n]*</p>" "" contents))
   (if org-sfhp-indent-output
@@ -703,7 +703,7 @@ and open it."
   "Intent filter for ox-sfhp."
   (with-temp-buffer
     (insert contents)
-    (if (fboundp 'web-mode) ;web-mode is better at indenting multi-language HTML files
+    (if (fboundp 'web-mode) ; web-mode is better at indenting multi-language HTML files
         (web-mode)
       (set-auto-mode t))
     (indent-region (point-min) (point-max))
