@@ -414,7 +414,7 @@ Explorer in ox-sfhp output.")
         (?f "As a file" org-sfhp-export-to-file)
         (?o "As a file and open" org-sfhp-export-to-file-and-open)))
   :options-alist
-  '((:sfhp-theme "SFHP_THEME" nil "dark" t)
+  '((:sfhp-theme "SFHP_THEME" nil "dark" space)
     (:sfhp-background-file "SFHP_BACKGROUND" nil nil space)
     (:sfhp-background-repeat "SFHP_BACKGROUND_REPEAT" nil nil space)
     (:sfhp-no-base64 "SFHP_NO_BASE64" nil nil space)))
