@@ -659,6 +659,11 @@ exist."
         org-sfhp-protected-characters)
   text)
 
+(defun org-sfhp-run-appropriate-mode ()
+  (if (fboundp 'web-mode)
+      (web-mode)                        ; web-mode is better at indenting
+    (set-auto-mode t)))
+
 ;;; export functions
 ;;;###autoload
 (defun org-sfhp-export-to-buffer
@@ -667,9 +672,8 @@ exist."
   (interactive)
   (org-export-to-buffer 'sfhp "*Org SFHP Export*"
     async subtreep visible-only body-only ext-plist
-    (lambda () (if (fboundp 'web-mode)
-                   (web-mode)
-                 (set-auto-mode t)))))
+    'org-sfhp-run-appropriate-mode))
+
 
 ;;;###autoload
 (defun org-sfhp-export-to-file
@@ -703,9 +707,7 @@ and open it."
   "Intent filter for ox-sfhp."
   (with-temp-buffer
     (insert contents)
-    (if (fboundp 'web-mode) ; web-mode is better at indenting multi-language HTML files
-        (web-mode)
-      (set-auto-mode t))
+    (org-sfhp-run-appropriate-mode)
     (indent-region (point-min) (point-max))
     (buffer-substring-no-properties (point-min) (point-max))))
 
