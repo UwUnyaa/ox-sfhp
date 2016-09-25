@@ -674,7 +674,6 @@ exist."
     async subtreep visible-only body-only ext-plist
     'org-sfhp-run-appropriate-mode))
 
-
 ;;;###autoload
 (defun org-sfhp-export-to-file
     (&optional async subtreep visible-only body-only ext-plist)
@@ -691,7 +690,6 @@ and open it."
   (interactive)
   (org-open-file (org-sfhp-export-to-file
                   async subtreep visible-only body-only ext-plist)))
-
 
 ;;; filters
 (defun org-sfhp-final-filter (contents backend info)
