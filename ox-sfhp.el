@@ -595,9 +595,11 @@ exist."
 
             ;; title
             (format "<title>%s</title>\n"
-                    (if (eq title "") ; title of a HTML document shouldn't be empty
-                        "Untitled presentation"
-                      title))
+                    (or (unless (eq title "")
+                          title)
+                        (when buffer-file-name
+                          (file-name-base buffer-file-name))
+                        "Untitled presentation")) ; <title> can't be empty
 
             ;; common code
             org-sfhp-meta
