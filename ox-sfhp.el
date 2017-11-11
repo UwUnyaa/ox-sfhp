@@ -437,7 +437,7 @@ Explorer in ox-sfhp output.")
                              (org-export-get-parent type))
        'descriptive)                    ; when a list is descriptive
       (format "<dt>%s</dt>\n<dd>\n%s</dd>"
-              (car (org-element-property :tag type)) ; returns a list, so I car it
+              (org-export-data (org-element-property :tag type) info)
               contents)
     (format "<li>\n%s</li>" contents)))
 
