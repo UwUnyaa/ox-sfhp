@@ -31,7 +31,7 @@
   "Style tags for ox-sfhp.")
 
 (defconst org-sfhp-style-common
-" /* common style */
+  " /* common style */
  body {
    margin: 0;
    font-family: sans, arial, helvetica;
