@@ -382,13 +382,7 @@ Explorer in ox-sfhp output.")
 
 ;; backend
 (org-export-define-backend 'sfhp
-  '((bold . org-sfhp-wrap-in-tag)
-    (italic . org-sfhp-wrap-in-tag)
-    (underline . org-sfhp-wrap-in-tag)
-    (verbatim . org-sfhp-monospace)
-    (strike-through . org-sfhp-wrap-in-tag)
-    (subscript . org-sfhp-wrap-in-tag)
-    (superscript . org-sfhp-wrap-in-tag)
+  `((verbatim . org-sfhp-monospace)
     (code . org-sfhp-monospace)
     (example-block . org-sfhp-monospace-block)
     (headline . org-sfhp-headline)
@@ -399,13 +393,16 @@ Explorer in ox-sfhp output.")
     (src-block . org-sfhp-src-block)
     (plain-list . org-sfhp-plain-list)
     (item . org-sfhp-item)
-    (quote-block . org-sfhp-wrap-in-tag)
     (section . org-sfhp-section)
     (table . org-sfhp-table)
     (table-cell . org-sfhp-table-cell)
     (table-row . org-sfhp-table-row)
     (template . org-sfhp-template)
-    (plain-text . org-sfhp-escape-html-chars))
+    (plain-text . org-sfhp-escape-html-chars)
+    ,@(mapcar
+       (lambda (pair)
+         `(,(car pair) . ,(org-sfhp-tag-wrapper (cdr pair))))
+       org-sfhp-tags))
   :export-block "SFHP"
   :filters-alist '((:filter-final-output . org-sfhp-final-filter))
   :menu-entry
@@ -420,12 +417,9 @@ Explorer in ox-sfhp output.")
     (:sfhp-no-base64 "SFHP_NO_BASE64" nil nil space)))
 
 ;;; wrapping functions (or whatever)
-(defun org-sfhp-wrap-in-tag (type contents info)
-  "Wraps contents in a HTML tag. Used by ox-sfhp."
-  (let ((tag (cdr (assoc (car type) org-sfhp-tags))))
-    (if tag
-        (format "<%s>%s</%s>" tag contents tag)
-      contents)))
+(defun org-sfhp-tag-wrapper (tag)
+  (lambda (types contents info)
+    (format "<%s>%s</%s>" tag contents tag)))
 
 (defun org-sfhp-monospace (type contents info)
   "Returns HTML with inline monospace text."
