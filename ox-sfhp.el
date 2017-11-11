@@ -470,8 +470,8 @@ Explorer in ox-sfhp output."
   "Return a headline."
   (let ((headline-number (car (org-export-get-headline-number type info)))
         (headline-level (org-export-get-relative-level type info))
-        (headline-title (org-sfhp-escape-html-chars
-                         (car (org-element-property :title type))))
+        (headline-title (org-export-data
+                         (org-element-property :title type) info))
         (contents-or-empty (if contents
                                contents
                              "")))      ; empty paragraph is "nil" otherwise
