@@ -652,8 +652,8 @@ exist."
   :filters-alist '((:filter-final-output . org-sfhp-final-filter))
   :menu-entry
   '(?p "Export to a single file HTML presentation"
-       ((?b "As a buffer" org-sfhp-export-to-buffer)
-        (?f "As a file" org-sfhp-export-to-file)
+       ((?P "As a buffer" org-sfhp-export-to-buffer)
+        (?p "As a file" org-sfhp-export-to-file)
         (?o "As a file and open" org-sfhp-export-to-file-and-open)))
   :options-alist
   '((:sfhp-theme "SFHP_THEME" nil "dark" space)
