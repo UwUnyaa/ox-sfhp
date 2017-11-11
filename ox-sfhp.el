@@ -342,18 +342,18 @@ button {
   "List of protected HTML characters and how they should be escaped.")
 
 (defconst org-sfhp-tags
-  '((bold . "b")
-    (italic . "i")
-    (underline . "u")
+  '((bold           . "b")
+    (italic         . "i")
+    (underline      . "u")
     (strike-through . "s")
-    (superscript . "sup")
-    (subscript . "sub")
-    (quote-block . "blockquote"))
+    (superscript    . "sup")
+    (subscript      . "sub")
+    (quote-block    . "blockquote"))
   "List of HTML tags. Used by ox-sfhp.")
 
 (defconst org-sfhp-list-types
-  '((ordered . "ol")
-    (unordered . "ul")
+  '((ordered     . "ol")
+    (unordered   . "ul")
     (descriptive . "dl"))
   "List of types of lists and tags that contain them. Used by ox-sfhp.")
 
@@ -362,12 +362,12 @@ button {
   "List of paragraph parent elements that should be treated differently.")
 
 (defconst org-sfhp-mime-types
-  '(("png" . "image/png")
-    ("jpg" . "image/jpeg")
+  '(("png"  . "image/png")
+    ("jpg"  . "image/jpeg")
     ("jpeg" . "image/jpeg")
     ("webp" . "image/webp")
-    ("bmp" . "image/bmp")
-    ("gif" . "image/gif"))
+    ("bmp"  . "image/bmp")
+    ("gif"  . "image/gif"))
   "List of image file types and their MIME types.")
 
 ;;; Variables
