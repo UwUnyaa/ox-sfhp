@@ -349,13 +349,13 @@ button {
     (superscript    . "sup")
     (subscript      . "sub")
     (quote-block    . "blockquote"))
-  "List of HTML tags. Used by ox-sfhp.")
+  "List of HTML tags.")
 
 (defconst org-sfhp-list-types
   '((ordered     . "ol")
     (unordered   . "ul")
     (descriptive . "dl"))
-  "List of types of lists and tags that contain them. Used by ox-sfhp.")
+  "List of types of lists and tags that contain them.")
 
 (defconst org-sfhp-special-paragraphs
   '(item quote-block)
@@ -484,8 +484,8 @@ Explorer in ox-sfhp output.")
 ;; link
 (defun org-sfhp-link (type contents info)
   "Returns an image encoded as base64, a link to a website or
-just text from the link. Used by ox-sfhp. Alt text for image can
-be supressed by using \"decoration\" as the link description."
+just text from the link. Alt text for image can be supressed by
+using \"decoration\" as the link description."
   (let* ((linked-type (org-element-property :type type))
          (file-path (org-element-property :path type))
          (raw-link (org-element-property :raw-link type))
@@ -613,7 +613,7 @@ exist."
 ;; plain text
 ;; this function is pretty much like org-html-encode-plain-text in ox-html
 (defun org-sfhp-escape-html-chars (text &optional info)
-  "Escapes characters used by HTML. Used by ox-sfhp."
+  "Escapes characters used by HTML."
   (mapc (lambda (pair)
           (setq text (replace-regexp-in-string (car pair) (cdr pair) text t t)))
         org-sfhp-protected-characters)
