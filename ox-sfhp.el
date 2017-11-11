@@ -380,42 +380,6 @@ break source code blocks and other things.")
   "When non-nil, inlude a CSS hack for old versions of Internet
 Explorer in ox-sfhp output.")
 
-;; backend
-(org-export-define-backend 'sfhp
-  `((verbatim . org-sfhp-monospace)
-    (code . org-sfhp-monospace)
-    (example-block . org-sfhp-monospace-block)
-    (headline . org-sfhp-headline)
-    (horizontal-rule . org-sfhp-horizontal-rule)
-    (line-break . org-sfhp-line-break)
-    (link . org-sfhp-link)
-    (paragraph . org-sfhp-paragraph)
-    (src-block . org-sfhp-src-block)
-    (plain-list . org-sfhp-plain-list)
-    (item . org-sfhp-item)
-    (section . org-sfhp-section)
-    (table . org-sfhp-table)
-    (table-cell . org-sfhp-table-cell)
-    (table-row . org-sfhp-table-row)
-    (template . org-sfhp-template)
-    (plain-text . org-sfhp-escape-html-chars)
-    ,@(mapcar
-       (lambda (pair)
-         `(,(car pair) . ,(org-sfhp-tag-wrapper (cdr pair))))
-       org-sfhp-tags))
-  :export-block "SFHP"
-  :filters-alist '((:filter-final-output . org-sfhp-final-filter))
-  :menu-entry
-  '(?p "Export to a single file HTML presentation"
-       ((?b "As a buffer" org-sfhp-export-to-buffer)
-        (?f "As a file" org-sfhp-export-to-file)
-        (?o "As a file and open" org-sfhp-export-to-file-and-open)))
-  :options-alist
-  '((:sfhp-theme "SFHP_THEME" nil "dark" space)
-    (:sfhp-background-file "SFHP_BACKGROUND" nil nil space)
-    (:sfhp-background-repeat "SFHP_BACKGROUND_REPEAT" nil nil space)
-    (:sfhp-no-base64 "SFHP_NO_BASE64" nil nil space)))
-
 ;;; wrapping functions (or whatever)
 (defun org-sfhp-tag-wrapper (tag)
   (lambda (types contents info)
@@ -659,6 +623,42 @@ exist."
   (if (fboundp 'web-mode)
       (web-mode)                        ; web-mode is better at indenting
     (set-auto-mode t)))
+
+;; backend
+(org-export-define-backend 'sfhp
+  `((verbatim . org-sfhp-monospace)
+    (code . org-sfhp-monospace)
+    (example-block . org-sfhp-monospace-block)
+    (headline . org-sfhp-headline)
+    (horizontal-rule . org-sfhp-horizontal-rule)
+    (line-break . org-sfhp-line-break)
+    (link . org-sfhp-link)
+    (paragraph . org-sfhp-paragraph)
+    (src-block . org-sfhp-src-block)
+    (plain-list . org-sfhp-plain-list)
+    (item . org-sfhp-item)
+    (section . org-sfhp-section)
+    (table . org-sfhp-table)
+    (table-cell . org-sfhp-table-cell)
+    (table-row . org-sfhp-table-row)
+    (template . org-sfhp-template)
+    (plain-text . org-sfhp-escape-html-chars)
+    ,@(mapcar
+       (lambda (pair)
+         `(,(car pair) . ,(org-sfhp-tag-wrapper (cdr pair))))
+       org-sfhp-tags))
+  :export-block "SFHP"
+  :filters-alist '((:filter-final-output . org-sfhp-final-filter))
+  :menu-entry
+  '(?p "Export to a single file HTML presentation"
+       ((?b "As a buffer" org-sfhp-export-to-buffer)
+        (?f "As a file" org-sfhp-export-to-file)
+        (?o "As a file and open" org-sfhp-export-to-file-and-open)))
+  :options-alist
+  '((:sfhp-theme "SFHP_THEME" nil "dark" space)
+    (:sfhp-background-file "SFHP_BACKGROUND" nil nil space)
+    (:sfhp-background-repeat "SFHP_BACKGROUND_REPEAT" nil nil space)
+    (:sfhp-no-base64 "SFHP_NO_BASE64" nil nil space)))
 
 ;;; export functions
 ;;;###autoload
