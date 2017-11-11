@@ -370,15 +370,25 @@ button {
     ("gif"  . "image/gif"))
   "List of image file types and their MIME types.")
 
-;;; Variables
-(defvar org-sfhp-indent-output (fboundp 'web-mode)
+;;; User customizable variables
+(defgroup org-export-sfhp '()
+  "Options for exporting Org mode files to single file HTML
+presentations."
+  :tag "Org export SFHP"
+  :group 'org-export)
+
+(defcustom org-sfhp-indent-output (fboundp 'web-mode)
   "When non-nil, ox-sfhp's output is indented. Indenting
 shouldn't be done when `web-mode' isn't installed, because it can
-break source code blocks and other things.")
+break source code blocks and other things."
+  :group 'org-export-sfhp
+  :type 'boolean)
 
-(defvar org-sfhp-include-oldie-hacks t
+(defcustom org-sfhp-include-oldie-hacks t
   "When non-nil, inlude a CSS hack for old versions of Internet
-Explorer in ox-sfhp output.")
+Explorer in ox-sfhp output."
+  :group 'org-export-sfhp
+  :type 'boolean)
 
 ;;; wrapping functions (or whatever)
 (defun org-sfhp-tag-wrapper (tag)
