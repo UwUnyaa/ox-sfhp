@@ -21,7 +21,7 @@
 
 ;;; Dependencies:
 (require 'ox)
-;; this exporter can use web-mode if it's installed to indent documents
+;; this exporter can use `web-mode' if it's installed to indent documents
 
 ;;; Variables and constants:
 
@@ -631,7 +631,7 @@ exist."
 
 (defun org-sfhp-run-appropriate-mode ()
   (if (fboundp 'web-mode)
-      (web-mode)                        ; web-mode is better at indenting
+      (web-mode)                        ; `web-mode' is better at indenting
     (set-auto-mode t)))
 
 ;; backend
