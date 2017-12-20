@@ -1,5 +1,5 @@
+;;; ox-sfhp.el --- export from org-mode to a single file HTML presentation
 ;;; -*- lexical-binding:t; coding: utf-8 -*-
-;;; ox-sfhp.el - export from org-mode to a single file HTML presentation
 ;;; Version: 1.2.1
 
 ;; Author: DoMiNeLa10 (https://github.com/DoMiNeLa10)
