@@ -23,7 +23,7 @@ Output of this exporter will look like this:
 These are prototype presentations written before work on this exporter
 started, but they look pretty much like output from it.
 
-* How the input file will look like?
+* How the output file will look like?
 - Top level headlines will be slides
   - Other headlines will be just centered text with progressively smaller
     fonts (=<h2>= through =<h6>= tags)
