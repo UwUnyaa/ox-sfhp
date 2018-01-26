@@ -51,7 +51,7 @@ with the file (which breaks the single file purpose of this exporter.) Linking
 images instead of encoding them as base64 makes exporting faster, (good for
 quick tests of how the output looks like, and big pictures slow down Emacs
 significantly) and the output is more compatible with older browsers that
-don't support base64 (like old versions of IE.)
+don't support base64 (like (very) old versions of IE.)
 
 Descriptions of links will be the =alt= text of pictures. They can be useful
 if the picture can't be displayed for some reason.
