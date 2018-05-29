@@ -658,7 +658,6 @@ exist."
          (lambda (pair)
            `(,(car pair) . ,(org-sfhp-tag-wrapper (cdr pair))))
          org-sfhp-tags)))
-  :export-block "SFHP"
   :filters-alist '((:filter-final-output . org-sfhp-final-filter))
   :menu-entry
   '(?p "Export to a single file HTML presentation"
