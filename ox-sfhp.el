@@ -488,7 +488,10 @@ Explorer in ox-sfhp output."
   "Returns a source code block as HTML code."
   (let* ((code (org-sfhp-escape-html-chars
                 (car (org-export-unravel-code type))))
-         (trimmed-code (substring code 0 (1- (length code)))))
+         (code-last-char-index (1- (length code)))
+         (trimmed-code (if (char-equal ?\n (aref code code-last-char-index))
+                           (substring code 0 code-last-char-index)
+                         code)))
     (format "<pre>%s</pre>" trimmed-code)))
 
 ;; link
