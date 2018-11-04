@@ -20,12 +20,19 @@
 ;; this program. If not, see <http://www.gnu.org/licenses/>.
 
 ;;; Dependencies:
+
+;;; Commentary:
+;; This file provides an exporter for `org-mode' that exports to single file
+;; HTML presentations.
+
 (require 'ox)
 ;; this exporter can use `web-mode' if it's installed to indent documents
 
 ;;; Variables and constants:
 
 ;;; Constants with code
+;;; Code:
+
 (defconst org-sfhp-style-tags
   '("<style type=\"text/css\">\n" . "</style>\n")
   "Style tags for ox-sfhp.")
@@ -150,7 +157,7 @@
    max-width: 90%;
    margin: 1em;
  }\n"
-  "Common style for ox-sfhp")
+  "Common style for ox-sfhp.")
 
 (defvar org-sfhp-color-themes
   '(("dark" . " /* dark theme */
@@ -219,8 +226,8 @@ button {
   }
   </style>
 <![endif]-->\n"
-  "A hack that fixes this presentation in old versions of
-  Internet Explorer that don't support position: fixed;")
+  "A hack for old versions of Internet Explorer.
+Fixes versions which don't support position: fixed;")
 
 (defconst org-sfhp-style-hack-polish-quotes
   " /* polish quotes */
@@ -230,7 +237,7 @@ button {
  blockquote:after {
    content: \"”\" !important;
  }\n"
-  "A hack that overrides quotes with polish quotation marks")
+  "A hack that overrides quotes with polish quotation marks.")
 
 (defconst org-sfhp-script
   "<script type=\"text/javascript\">
@@ -322,7 +329,7 @@ button {
  }
  document.onkeydown = getKey;
 </script>\n"
-  "JavaScript code for one at a time display in ox-sfhp output")
+  "JavaScript code for one at a time display in ox-sfhp output.")
 
 (defconst org-sfhp-meta
   "<meta charset=\"utf-8\" />
@@ -378,20 +385,21 @@ presentations."
   :group 'org-export)
 
 (defcustom org-sfhp-indent-output (fboundp 'web-mode)
-  "When non-nil, ox-sfhp's output is indented. Indenting
-shouldn't be done when `web-mode' isn't installed, because it can
-break source code blocks and other things."
+  "When non-nil, ox-sfhp's output is indented.
+
+Indenting shouldn't be done when `web-mode' isn't installed,
+because it can break source code blocks and other things."
   :group 'org-export-sfhp
   :type 'boolean)
 
 (defcustom org-sfhp-include-oldie-hacks t
-  "When non-nil, inlude a CSS hack for old versions of Internet
-Explorer in ox-sfhp output."
+  "When non-nil, inlude a CSS hacks for old Internet Explorer."
   :group 'org-export-sfhp
   :type 'boolean)
 
 ;;; wrapping functions (or whatever)
 (defun org-sfhp-tag-wrapper (tag)
+  "Return a function for `ox' to wrap contents in HTML TAG."
   (lambda (types contents info)
     (format "<%s>%s</%s>" tag contents tag)))
 
@@ -496,9 +504,10 @@ Explorer in ox-sfhp output."
 
 ;; link
 (defun org-sfhp-link (type contents info)
-  "Returns an image encoded as base64, a link to a website or
-just text from the link. Alt text for image can be supressed by
-using \"decoration\" as the link description."
+  "Return an image encoded as base64, a link or just text.
+
+Alt text for image can be supressed by using \"decoration\" as
+the link description."
   (let* ((linked-type (org-element-property :type type))
          (file-path (org-element-property :path type))
          (raw-link (org-element-property :raw-link type))
@@ -530,9 +539,9 @@ using \"decoration\" as the link description."
 
 ;; encode as base64
 (defun org-sfhp-encode-as-base64 (mime-type file-path info)
-  "Returns an image as a base64-encoded string along with its
-MIME type or a relative path to a file. File is assumed to
-exist."
+  "Return an image as a data link or a relative path.
+
+File is assumed to exist."
   (if (plist-get info :sfhp-no-base64)
       (file-relative-name file-path)
     (format "data:%s;base64,%s"
@@ -544,7 +553,7 @@ exist."
 
 ;; template
 (defun org-sfhp-template (contents info)
-  "Returns the outer template of the HTML document."
+  "Return the outer template of the HTML document."
   (let* ((language (plist-get info :language))
          (title (org-export-data (plist-get info :title) info))
          (theme (plist-get info :sfhp-theme))
@@ -626,13 +635,14 @@ exist."
 ;; plain text
 ;; this function is pretty much like org-html-encode-plain-text in ox-html
 (defun org-sfhp-escape-html-chars (text &optional info)
-  "Escapes characters used by HTML."
+  "Escape characters used by HTML."
   (mapc (lambda (pair)
           (setq text (replace-regexp-in-string (car pair) (cdr pair) text t t)))
         org-sfhp-protected-characters)
   text)
 
 (defun org-sfhp-run-appropriate-mode ()
+  "Enable `web-mode' or default mode for editing HTML files."
   (if (fboundp 'web-mode)
       (web-mode)                        ; `web-mode' is better at indenting
     (set-auto-mode t)))
@@ -694,8 +704,7 @@ exist."
 ;;;###autoload
 (defun org-sfhp-export-to-file-and-open
     (&optional async subtreep visible-only body-only ext-plist)
-  "Export current buffer to a single file HTML presentation file
-and open it."
+  "Export current buffer with `ox-sfhp' and open it."
   (interactive)
   (org-open-file (org-sfhp-export-to-file
                   async subtreep visible-only body-only ext-plist)))
@@ -711,7 +720,7 @@ and open it."
     contents))
 
 (defun org-sfhp-indent-filter (contents backend info)
-  "Intent filter for ox-sfhp."
+  "Indent filter for ox-sfhp."
   (with-temp-buffer
     (insert contents)
     (org-sfhp-run-appropriate-mode)
@@ -719,3 +728,5 @@ and open it."
     (buffer-substring-no-properties (point-min) (point-max))))
 
 (provide 'ox-sfhp)
+
+;;; ox-sfhp.el ends here
