@@ -2,7 +2,7 @@
 ;;; -*- lexical-binding:t; coding: utf-8 -*-
 ;;; Version: 1.2.3
 
-;; Author: DoMiNeLa10 (https://github.com/DoMiNeLa10)
+;; Author: UwUnyaa (https://github.com/UwUnyaa)
 
 ;;; license: GPLv3 or newer
 
@@ -244,7 +244,7 @@ Fixes versions which don't support position: fixed;")
  /* @licstart The following is the entire license notice for the JavaScript
     code in this page.
 
-    Copyright (C) 2016 DoMiNeLa10
+    Copyright (C) 2016, 2020 UwUnyaa
 
     The JavaScript code in this page is free software: you can redistribute
     it and/or modify it under the terms of the GNU General Public License
